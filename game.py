@@ -1,4 +1,3 @@
-import os
 import sys
 import pygame
 
@@ -9,6 +8,8 @@ import soil
 from screen_config import Screen
 from shoot import Shoot
 from glob_timer import Timer
+from bunby_helli import Helicopter
+import camera
 
 pygame.init()
 
@@ -19,15 +20,16 @@ event_timer = pygame.time.Clock()
 running = True
 
 mega = Megaman(
-    [screen.display_screen.get_width() / 2, screen.display_screen.get_height() / 2],
+    screen.display_screen.get_width() / 2,
+    screen.display_screen.get_height() / 2,
 )
-buster = Shoot(mega.x + 30, mega.y)
+buster = Shoot(mega.x_coll + 30, mega.y_coll)
 col_mega = mega.coll()
 floor = soil.Ground("Ground", 0, screen.display_screen.get_height() / 2 + 80, 1270, 100)
 col_floor = floor.coll()
 
 shoots = []
-
+bunby = Helicopter(600, 100)
 while running:
     Timer(clock)
     screen.display_screen.fill("black")
@@ -52,15 +54,28 @@ while running:
     pygame.draw.rect(screen.display_screen, "red", col_floor)
     pygame.draw.rect(screen.display_screen, "blue", col_mega)
     mega.colliding(col_mega, col_floor)
-    if buster.shoot_amount > 0:
-        buster.draw_sprite(shoots)
 
-    mega.move_right()
     mega.move_left()
+    mega.move_right()
     mega.jumping_state()
     mega.animations()
-    buster.draw_sprite(shoots)
-    buster.move_shoot(shoots)
+    buster.run(shoots)
+    bunby.run()
+
+    pos_relativa = mega.x - camera.camera_x
+    meio_tela = screen.display_screen.get_width() / 2
+    if mega.left and pos_relativa >= meio_tela:
+        if pos_relativa == meio_tela:
+            n = 8
+        else:
+            n = 9
+        camera.camera_x += n
+    elif not mega.left and pos_relativa <= meio_tela:
+        if pos_relativa == meio_tela:
+            n = 8
+        else:
+            n = 9
+        camera.camera_x -= n
 
     pygame.display.flip()
 

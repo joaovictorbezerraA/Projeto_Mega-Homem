@@ -2,6 +2,7 @@ import pygame
 import global_var
 from collision import Collision
 from screen_config import Screen
+import camera
 
 pygame.init()
 
@@ -12,15 +13,14 @@ pixel_offset = 6
 pygame.init()
 
 
-class Megaman(Collision, Screen):
-    def __init__(self, position, width=17 * 3, height=23 * 3):
+class Megaman(Collision):
+    def __init__(self, x, y, width=17 * 3, height=23 * 3):
         self.gravitty = 1
-        self.position = position
         self.speed = 8
-        self.x = self.position[0] + pixel_offset
-        self.y = self.position[1]
-        self.collision_x = self.x + 6
-        self.collision_y = self.y
+        self.x = x
+        self.y = y
+        self.x_coll = x + pixel_offset
+        self.y_coll = y + pixel_offset
         self.width = width
         self.height = height
 
@@ -50,15 +50,15 @@ class Megaman(Collision, Screen):
         self.display_to_blit = Screen.display_screen
 
     def falling(self):
-        self.position[1] += self.gravitty * self.falling_counter
-        self.y = self.position[1]
+        self.y += self.gravitty * self.falling_counter
+        self.y_coll = self.y
         self.falling_counter += 0.5
 
     def colliding(self, mega_colision, collision):
         if mega_colision.colliderect(collision):
             self.onground = True
             mega_colision.bottom = collision.top
-            self.position[1] = mega_colision.top
+            self.y = mega_colision.top
             self.falling_counter = 0
 
         else:
@@ -71,21 +71,24 @@ class Megaman(Collision, Screen):
         ):
             self.moving = False
             self.animation_index = 0
+            self.y_coll = self.y + pixel_offset
+            self.x_coll = self.x + pixel_offset - camera.camera_x
 
     def move_right(self):
         if self.keys_pressed[pygame.K_d]:
             self.moving = True
             self.left = True
-            self.position[0] += self.speed
-            self.x = self.position[0] + pixel_offset
+            for _ in range(self.speed):
+                self.x += 1
+                self.x_coll = self.x + pixel_offset - camera.camera_x
         self.is_idle()
 
     def move_left(self):
         if self.keys_pressed[pygame.K_a]:
             self.moving = True
             self.left = False
-            self.position[0] -= self.speed
-            self.x = self.position[0] - pixel_offset
+            self.x -= self.speed
+            self.x_coll = self.x + pixel_offset - camera.camera_x
         self.is_idle()
 
     def jump(self):
@@ -93,8 +96,8 @@ class Megaman(Collision, Screen):
             self.jumping = True
             for i in range(60):
                 if i % 10 == 0:
-                    self.position[1] -= 1
-                    self.y = self.position[1]
+                    self.y -= 1
+                    self.y_coll = self.y
 
     def jumping_state(self):
         if self.onground:
@@ -103,8 +106,8 @@ class Megaman(Collision, Screen):
         if self.jumping:
             for i in range(20):
                 if i % 2:
-                    self.position[1] -= 1
-                    self.y = self.position[1]
+                    self.y -= 1
+                    self.y_coll = self.y
 
     def walk_animation(self):
         if (
@@ -145,5 +148,9 @@ class Megaman(Collision, Screen):
         else:
             self.falling_animation()
         self.display_to_blit.blit(
-            pygame.transform.scale_by(self.sprite, 3), self.position
+            pygame.transform.scale_by(self.sprite, 3),
+            (
+                self.x - camera.camera_x,
+                self.y - camera.camera_y,
+            ),
         )
