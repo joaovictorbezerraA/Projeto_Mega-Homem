@@ -26,6 +26,7 @@ class Megaman(Collision):
         self.y_coll = y - pixel_offset
         self.width = width
         self.height = height
+        self.y_speed = 0
 
         self.keys_pressed = pygame.key.get_pressed()
         self.moving = False
@@ -36,6 +37,7 @@ class Megaman(Collision):
         self.display_to_blit = Screen.display_screen
 
         self.onground = True
+        self.on_ceiling = False
         self.jumping = False
 
         self.walk_sprites = [
@@ -53,10 +55,10 @@ class Megaman(Collision):
         self.display_to_blit = Screen.display_screen
 
     def falling(self):
-        acceleration = self.gravitty * self.falling_counter
-        if acceleration > 30:
-            acceleration = 30
-        self.y += acceleration
+        self.y_speed = self.gravitty * self.falling_counter
+        if self.y_speed > 30:
+            self.y_speed = 30
+        self.y += self.y_speed
         self.y_coll = self.y + pixel_offset_y
         self.falling_counter += 0.5
 
@@ -65,16 +67,26 @@ class Megaman(Collision):
         colliding = False
         for coll in collision:
             if mega_colision.colliderect(coll):
-                self.onground = True
-                self.acceleration = 0
-                colliding = True
-                mega_colision.bottom = coll.top
-                self.y = mega_colision.top
-                self.falling_counter = 0
-                # elif self.y <= coll.bottom + 20:
-                # self.onground = False
-                # mega_colision.top = coll.bottom + 5
-                # self.y = mega_colision.bottom
+                if (
+                    mega_colision.bottom > coll.top - self.y_speed
+                    and mega_colision.top < coll.top
+                ):
+                    self.onground = True
+                    self.y_speed = 0
+                    colliding = True
+                    mega_colision.bottom = coll.top
+                    self.y = mega_colision.top
+                    self.falling_counter = 0
+                    break
+                if (
+                    mega_colision.top < coll.bottom + self.y_speed
+                    and mega_colision.bottom > coll.bottom
+                ):
+                    self.jumping = False
+                    mega_colision.top = coll.bottom
+                    self.y_speed = 0
+                    self.y = mega_colision.top
+                    break
 
         if not colliding:
             self.onground = False
@@ -84,15 +96,14 @@ class Megaman(Collision):
         cx = camera.camera_x
         for coll in collisions:
             if mega_colision.colliderect(coll):
-                if mega_colision.left - cx > coll.right - 30 - cx:
+                if mega_colision.right - cx < coll.left + 30 - cx:
+                    self.x -= self.speed
+                elif mega_colision.left - cx > coll.right - 30 - cx:
                     self.x += self.speed
                     # mega_colision.left = coll.right
                     # self.x = mega_colision.right + cx
-                elif mega_colision.right - cx < coll.left + 30 - cx:
-                    self.x -= self.speed
                 # bottom works fine
                 self.x_coll = self.x
-                print(mega_colision.left, coll.right - 30)
 
     def is_idle(self):
         if not (self.keys_pressed[pygame.K_d] or self.keys_pressed[pygame.K_a]) or (
@@ -111,6 +122,7 @@ class Megaman(Collision):
                 self.x += 1
                 self.x_coll = self.x + pixel_offset - camera.camera_x
         self.is_idle()
+        self.y_coll = self.y + 1
 
     def move_left(self):
         if self.keys_pressed[pygame.K_a] and self.x - camera.camera_x > -10:
@@ -120,13 +132,15 @@ class Megaman(Collision):
                 self.x -= 1
                 self.x_coll = self.x + pixel_offset - camera.camera_x
         self.is_idle()
+        self.y_coll = self.y + 1
 
     def jump(self):
         if self.onground:
             self.jumping = True
             for i in range(20):
-                if i % 10 == 0:
-                    self.y -= 1
+                if i % 10 == 0 and not self.on_ceiling:
+                    self.y_speed -= 1.5
+                    self.y += self.y_speed
                     self.y_coll = self.y
 
     def jumping_state(self):
