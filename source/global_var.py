@@ -7,3 +7,7 @@ megaman_sprites = image_loader("./sprites/Megaman_Sprites")
 helicopter_sprites = image_loader(
     "./sprites/Enemy_Sprites/Helicopter_Helicopter_Sprites"
 )
+
+stage_sprites = image_loader("./sprites/Stage")
+
+debug_mode = False

@@ -9,7 +9,9 @@ from screen_config import Screen
 from shoot import Shoot
 from glob_timer import Timer
 from bunby_helli import Helicopter
+from stage import Stage
 import camera
+import global_var
 
 pygame.init()
 
@@ -20,19 +22,19 @@ event_timer = pygame.time.Clock()
 running = True
 
 mega = Megaman(
-    screen.display_screen.get_width() / 2,
-    screen.display_screen.get_height() / 2,
+    45,
+    506,
 )
 buster = Shoot(mega.x_coll + 30, mega.y_coll)
 col_mega = mega.coll()
-floor = soil.Ground("Ground", 0, screen.display_screen.get_height() / 2 + 80, 1270, 100)
-col_floor = floor.coll()
+stage = Stage()
 
 shoots = []
 bunby = Helicopter(600, 100)
 while running:
     Timer(clock)
     screen.display_screen.fill("black")
+    stage.draw_stage()
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -45,15 +47,26 @@ while running:
                 mega.shoot_direction = mega.left
                 shoots.append((buster_shoot, mega.shoot_direction))
                 buster.lemon_shoot(shoots)
+            if event.key == pygame.K_p:
+                if global_var.debug_mode is False:
+                    global_var.debug_mode = True
+                else:
+                    global_var.debug_mode = False
 
     col_mega = mega.coll()
+
+    if mega.y - camera.camera_y > 640:
+        mega.respawn()
 
     k = pygame.key.get_pressed()
     mega.keys_pressed = k
 
-    pygame.draw.rect(screen.display_screen, "red", col_floor)
     pygame.draw.rect(screen.display_screen, "blue", col_mega)
-    mega.colliding(col_mega, col_floor)
+    floor_col = stage.handle_coll()
+    stair_col = stage.handle_stair_coll()
+    wall_col = stage.handle_wall_coll()
+    mega.colliding(col_mega, floor_col)
+    mega.coll_wall(col_mega, wall_col)
 
     mega.move_left()
     mega.move_right()
@@ -64,18 +77,21 @@ while running:
 
     pos_relativa = mega.x - camera.camera_x
     meio_tela = screen.display_screen.get_width() / 2
-    if mega.left and pos_relativa >= meio_tela:
+    if mega.left and pos_relativa >= meio_tela and mega.x < 2700:
         if pos_relativa == meio_tela:
             n = 8
         else:
             n = 9
         camera.camera_x += n
-    elif not mega.left and pos_relativa <= meio_tela:
+    elif not mega.left and pos_relativa <= meio_tela and mega.x > 370:
         if pos_relativa == meio_tela:
             n = 8
         else:
             n = 9
         camera.camera_x -= n
+
+    if mega.y - camera.camera_y > 640:
+        mega.respawn()
 
     pygame.display.flip()
 

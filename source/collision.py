@@ -2,8 +2,8 @@ import pygame
 
 
 class Collision:
-    def __init__(self, objeto, x, y, width, height):
-        self.object = objeto
+    def __init__(self, name, x, y, width, height):
+        self.object = name
         self.x_coll = x
         self.y_coll = y
         self.width = width

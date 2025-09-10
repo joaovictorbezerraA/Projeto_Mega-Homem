@@ -8,19 +8,22 @@ pygame.init()
 
 clock = pygame.time.Clock()
 
-pixel_offset = 6
+pixel_offset = 10
+pixel_offset_y = 3
 
 pygame.init()
 
 
 class Megaman(Collision):
-    def __init__(self, x, y, width=17 * 3, height=23 * 3):
+    def __init__(self, x, y, width=14 * 3, height=23 * 3):
         self.gravitty = 1
         self.speed = 8
         self.x = x
         self.y = y
+        self.init_x = x
+        self.init_y = y
         self.x_coll = x + pixel_offset
-        self.y_coll = y + pixel_offset
+        self.y_coll = y - pixel_offset
         self.width = width
         self.height = height
 
@@ -50,20 +53,46 @@ class Megaman(Collision):
         self.display_to_blit = Screen.display_screen
 
     def falling(self):
-        self.y += self.gravitty * self.falling_counter
-        self.y_coll = self.y
+        acceleration = self.gravitty * self.falling_counter
+        if acceleration > 30:
+            acceleration = 30
+        self.y += acceleration
+        self.y_coll = self.y + pixel_offset_y
         self.falling_counter += 0.5
 
     def colliding(self, mega_colision, collision):
-        if mega_colision.colliderect(collision):
-            self.onground = True
-            mega_colision.bottom = collision.top
-            self.y = mega_colision.top
-            self.falling_counter = 0
+        cx = camera.camera_x
+        colliding = False
+        for coll in collision:
+            if mega_colision.colliderect(coll):
+                self.onground = True
+                self.acceleration = 0
+                colliding = True
+                mega_colision.bottom = coll.top
+                self.y = mega_colision.top
+                self.falling_counter = 0
+                # elif self.y <= coll.bottom + 20:
+                # self.onground = False
+                # mega_colision.top = coll.bottom + 5
+                # self.y = mega_colision.bottom
 
-        else:
+        if not colliding:
             self.onground = False
             self.falling()
+
+    def coll_wall(self, mega_colision, collisions):
+        cx = camera.camera_x
+        for coll in collisions:
+            if mega_colision.colliderect(coll):
+                if mega_colision.left - cx > coll.right - 30 - cx:
+                    self.x += self.speed
+                    # mega_colision.left = coll.right
+                    # self.x = mega_colision.right + cx
+                elif mega_colision.right - cx < coll.left + 30 - cx:
+                    self.x -= self.speed
+                # bottom works fine
+                self.x_coll = self.x
+                print(mega_colision.left, coll.right - 30)
 
     def is_idle(self):
         if not (self.keys_pressed[pygame.K_d] or self.keys_pressed[pygame.K_a]) or (
@@ -71,11 +100,11 @@ class Megaman(Collision):
         ):
             self.moving = False
             self.animation_index = 0
-            self.y_coll = self.y + pixel_offset
+            self.y_coll = self.y + pixel_offset_y
             self.x_coll = self.x + pixel_offset - camera.camera_x
 
     def move_right(self):
-        if self.keys_pressed[pygame.K_d]:
+        if self.keys_pressed[pygame.K_d] and self.x - camera.camera_x < 720:
             self.moving = True
             self.left = True
             for _ in range(self.speed):
@@ -84,17 +113,18 @@ class Megaman(Collision):
         self.is_idle()
 
     def move_left(self):
-        if self.keys_pressed[pygame.K_a]:
+        if self.keys_pressed[pygame.K_a] and self.x - camera.camera_x > -10:
             self.moving = True
             self.left = False
-            self.x -= self.speed
-            self.x_coll = self.x + pixel_offset - camera.camera_x
+            for _ in range(self.speed):
+                self.x -= 1
+                self.x_coll = self.x + pixel_offset - camera.camera_x
         self.is_idle()
 
     def jump(self):
         if self.onground:
             self.jumping = True
-            for i in range(60):
+            for i in range(20):
                 if i % 10 == 0:
                     self.y -= 1
                     self.y_coll = self.y
@@ -154,3 +184,8 @@ class Megaman(Collision):
                 self.y - camera.camera_y,
             ),
         )
+
+    def respawn(self):
+        self.x = self.init_x
+        self.y = self.init_y
+        camera.camera_x = 0
