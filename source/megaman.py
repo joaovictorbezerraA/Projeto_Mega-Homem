@@ -17,7 +17,7 @@ pygame.init()
 class Megaman(Collision):
     def __init__(self, x, y, width=14 * 3, height=23 * 3):
         self.gravitty = 1
-        self.speed = 8
+        self.speed = 6
         self.x = x
         self.y = y
         self.init_x = x
@@ -64,17 +64,37 @@ class Megaman(Collision):
             if self.y_speed > 30:
                 self.y_speed = 30
             self.vertical_move(pixel_offset_y)
-            self.falling_counter += 0.5
+            self.falling_counter += 0.38
 
     def colliding(self, mega_colision, collision):
-        cx = camera.camera_x
         colliding = False
         for coll in collision:
             if mega_colision.colliderect(coll):
                 if not self.on_stair:
                     if (
+                        mega_colision.left <= coll.right + self.speed
+                        and mega_colision.right > coll.right + self.speed
+                        and mega_colision.bottom > coll.top + self.y_speed + 1
+                        and mega_colision.top < coll.bottom - 1 - self.y_speed
+                    ):
+                        mega_colision.left = coll.right + 1
+                        self.x += self.speed
+                    elif (
+                        mega_colision.right <= coll.left + self.speed + 10
+                        and mega_colision.left < coll.left + self.speed
+                        and mega_colision.bottom > coll.top + self.y_speed + 1
+                        and mega_colision.top < coll.bottom - 1 - self.y_speed
+                    ):
+                        mega_colision.right = coll.left - 1
+                        self.x -= self.speed
+
+                    elif (
                         mega_colision.bottom > coll.top - self.y_speed
                         and mega_colision.top < coll.top
+                        and (
+                            mega_colision.left >= coll.left
+                            or mega_colision.right <= coll.right
+                        )
                     ):
                         self.onground = True
                         self.y_speed = 0
@@ -82,16 +102,20 @@ class Megaman(Collision):
                         mega_colision.bottom = coll.top
                         self.y = mega_colision.top
                         self.falling_counter = 0
-                        break
-                    if (
+                    elif (
                         mega_colision.top < coll.bottom + self.y_speed
                         and mega_colision.bottom > coll.bottom
+                        and (
+                            mega_colision.left >= coll.left
+                            or mega_colision.right <= coll.right
+                        )
                     ):
                         self.jumping = False
                         mega_colision.top = coll.bottom
                         self.y_speed = 0
                         self.y = mega_colision.top
-                        break
+
+                    print(mega_colision.left, coll.right)
                 else:
                     if mega_colision.top + 55 <= coll.top:
                         self.on_stair = False
@@ -100,25 +124,11 @@ class Megaman(Collision):
             self.onground = False
             self.falling()
 
-    def coll_wall(self, mega_colision, collisions):
-        cx = camera.camera_x
-        for coll in collisions:
-            if mega_colision.colliderect(coll):
-                if mega_colision.right - cx < coll.left + 30 - cx:
-                    self.x -= self.speed
-                elif mega_colision.left - cx > coll.right - 30 - cx:
-                    self.x += self.speed
-                    # mega_colision.left = coll.right
-                    # self.x = mega_colision.right + cx
-                # bottom works fine
-
     def on_stair_coll(self, events, mega_colision, stair_collisions):
         cx = camera.camera_x
         for coll in stair_collisions:
             if mega_colision.colliderect(coll):
-                print(mega_colision.bottom, coll.top)
                 if mega_colision.bottom <= coll.top + 10:
-                    print("a")
                     self.on_stair = False
                 for event in events:
                     if event.type == pygame.KEYDOWN and (
@@ -167,7 +177,7 @@ class Megaman(Collision):
                 self.moving = True
                 for _ in range(self.speed):
                     self.x -= 1
-                    self.x_coll = self.x + pixel_offset - camera.camera_x
+                    self.x_coll = self.x + pixel_offset - camera.camera_x + 3
         self.is_idle()
         self.y_coll = self.y + 1
 
@@ -191,7 +201,7 @@ class Megaman(Collision):
             self.jumping = True
             for i in range(20):
                 if i % 10 == 0 and not (self.on_ceiling or self.on_stair):
-                    self.y_speed -= 1.5
+                    self.y_speed -= 3
                     self.vertical_move()
 
     def jumping_state(self):

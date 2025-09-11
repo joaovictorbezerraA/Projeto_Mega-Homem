@@ -39,7 +39,7 @@ class Stage(Stage_collisions, Megaman):
         return self.stairs_collisions
 
     def handle_wall_coll(self):
-        debug = global_var.debug_mode
+        debug = global_var.wall_debug
         self.update_wall_coll()
         for coll in self.wall_collisions:
             if debug:

@@ -33,7 +33,7 @@ shoots = []
 bunby = Helicopter(600, 100)
 while running:
     Timer(clock)
-    screen.display_screen.fill("black")
+    screen.display_screen.fill("#00e8d8")
     stage.draw_stage()
     events = pygame.event.get()
     for event in events:
@@ -52,6 +52,11 @@ while running:
                     global_var.debug_mode = True
                 else:
                     global_var.debug_mode = False
+            if event.key == pygame.K_o:
+                if global_var.wall_debug is False:
+                    global_var.wall_debug = True
+                else:
+                    global_var.wall_debug = False
 
     col_mega = mega.coll()
 
@@ -64,9 +69,7 @@ while running:
     pygame.draw.rect(screen.display_screen, "blue", col_mega)
     floor_col = stage.handle_coll()
     stair_col = stage.handle_stair_coll()
-    wall_col = stage.handle_wall_coll()
     mega.colliding(col_mega, floor_col)
-    mega.coll_wall(col_mega, wall_col)
     mega.on_stair_coll(events, col_mega, stair_col)
 
     mega.move_left()
@@ -80,10 +83,10 @@ while running:
     pos_relativa = mega.x - camera.camera_x
     meio_tela = screen.display_screen.get_width() / 2
     if mega.left and pos_relativa > meio_tela and mega.x < 2700:
-        camera.camera_x += 8
+        camera.camera_x += mega.speed
     elif not mega.left and pos_relativa < meio_tela:
         if mega.x > 340:
-            camera.camera_x -= 8
+            camera.camera_x -= mega.speed
         if camera.camera_x < 0:
             camera.camera_x = 0
 

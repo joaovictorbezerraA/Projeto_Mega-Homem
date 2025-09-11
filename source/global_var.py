@@ -11,3 +11,4 @@ helicopter_sprites = image_loader(
 stage_sprites = image_loader("./sprites/Stage")
 
 debug_mode = False
+wall_debug = False
