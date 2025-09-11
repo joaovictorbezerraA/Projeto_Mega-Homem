@@ -2,7 +2,7 @@ import pygame
 from screen_config import Screen
 from collision import Collision
 from global_var import stage_sprites
-from list_coll import Floor_collisions
+from stage_coll import Stage_collisions
 import camera
 import global_var
 from megaman import Megaman
@@ -10,7 +10,7 @@ from megaman import Megaman
 pygame.init()
 
 
-class Stage(Floor_collisions, Megaman):
+class Stage(Stage_collisions, Megaman):
     def __init__(self):
         super().__init__()
         self.screen = Screen.display_screen

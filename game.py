@@ -35,8 +35,8 @@ while running:
     Timer(clock)
     screen.display_screen.fill("black")
     stage.draw_stage()
-
-    for event in pygame.event.get():
+    events = pygame.event.get()
+    for event in events:
         if event.type == pygame.QUIT:
             running = False
         if event.type == pygame.KEYDOWN:
@@ -67,9 +67,11 @@ while running:
     wall_col = stage.handle_wall_coll()
     mega.colliding(col_mega, floor_col)
     mega.coll_wall(col_mega, wall_col)
+    mega.on_stair_coll(events, col_mega, stair_col)
 
     mega.move_left()
     mega.move_right()
+    mega.move_stair()
     mega.jumping_state()
     mega.animations()
     buster.run(shoots)
@@ -77,18 +79,13 @@ while running:
 
     pos_relativa = mega.x - camera.camera_x
     meio_tela = screen.display_screen.get_width() / 2
-    if mega.left and pos_relativa >= meio_tela and mega.x < 2700:
-        if pos_relativa == meio_tela:
-            n = 8
-        else:
-            n = 9
-        camera.camera_x += n
-    elif not mega.left and pos_relativa <= meio_tela and mega.x > 370:
-        if pos_relativa == meio_tela:
-            n = 8
-        else:
-            n = 9
-        camera.camera_x -= n
+    if mega.left and pos_relativa > meio_tela and mega.x < 2700:
+        camera.camera_x += 8
+    elif not mega.left and pos_relativa < meio_tela:
+        if mega.x > 340:
+            camera.camera_x -= 8
+        if camera.camera_x < 0:
+            camera.camera_x = 0
 
     if mega.y - camera.camera_y > 640:
         mega.respawn()
