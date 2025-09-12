@@ -1,5 +1,6 @@
 import pygame
 import camera
+import global_var
 import copy
 from list_coll import og_floor_col, og_stair_col
 
@@ -15,11 +16,15 @@ class Stage_collisions:
         self.stairs_collisions = copy.deepcopy(og_stair_col)
 
     def update_coll(self):
-        cx = camera.camera_x
+        cx = global_var.camera_x
+        cy = global_var.camera_y
         for i in range(len(self.floor_collisions)):
             self.floor_collisions[i][0] = og_floor_col[i][0] - cx
+            self.floor_collisions[i][1] = og_floor_col[i][1] - cy
 
     def update_stair_coll(self):
-        cx = camera.camera_x
+        cx = global_var.camera_x
+        cy = global_var.camera_y
         for i in range(len(self.stairs_collisions)):
             self.stairs_collisions[i][0] = og_stair_col[i][0] - cx
+            self.stairs_collisions[i][1] = og_stair_col[i][1] - cy

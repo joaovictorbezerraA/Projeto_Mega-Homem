@@ -1,5 +1,5 @@
 import pygame
-from global_var import helicopter_sprites
+import global_var
 from enemy import Enemy
 from screen_config import Screen
 from megaman import Megaman
@@ -16,8 +16,8 @@ class Helicopter(Enemy):
         self.x_coll = self.x
         self.y_coll = self.y
         self.sprites = [
-            helicopter_sprites["Fly_1"],
-            helicopter_sprites["Fly_2"],
+            global_var.helicopter_sprites["Fly_1"],
+            global_var.helicopter_sprites["Fly_2"],
         ]
         self.used_sprite = pygame.transform.scale_by(self.sprites[0], 3)
         self.anim_inx = 0
@@ -29,7 +29,7 @@ class Helicopter(Enemy):
         self.direction = True
 
     def animation(self):
-        cx = camera.camera_x
+        cx = global_var.camera_x
         if self.anim_inx == 7:
             self.anim_inx = 0
         if self.anim_inx == 3:
@@ -44,7 +44,7 @@ class Helicopter(Enemy):
         self.anim_inx += 1
 
     def move(self):
-        cx = camera.camera_x
+        cx = global_var.camera_x
         for j in range(100):
             if j * 10 == 0:
                 if self.x >= 720 + cx:

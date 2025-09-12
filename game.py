@@ -20,10 +20,11 @@ clock = pygame.time.Clock()
 event_timer = pygame.time.Clock()
 
 running = True
+soma = 0
 
 mega = Megaman(
     45,
-    506,
+    528,
 )
 buster = Shoot(mega.x_coll + 30, mega.y_coll)
 col_mega = mega.coll()
@@ -34,6 +35,7 @@ bunby = Helicopter(600, 100)
 while running:
     Timer(clock)
     screen.display_screen.fill("#00e8d8")
+    stage.change_segment((mega.x, mega.y))
     stage.draw_stage()
     events = pygame.event.get()
     for event in events:
@@ -57,11 +59,10 @@ while running:
                     global_var.wall_debug = True
                 else:
                     global_var.wall_debug = False
+            if event.key == pygame.K_l:
+                pygame.time.wait(1000)
 
     col_mega = mega.coll()
-
-    if mega.y - camera.camera_y > 640:
-        mega.respawn()
 
     k = pygame.key.get_pressed()
     mega.keys_pressed = k
@@ -80,21 +81,30 @@ while running:
     buster.run(shoots)
     bunby.run()
 
-    pos_relativa = mega.x - camera.camera_x
-    meio_tela = screen.display_screen.get_width() / 2
-    if mega.left and pos_relativa > meio_tela and mega.x < 2700:
-        camera.camera_x += mega.speed
-    elif not mega.left and pos_relativa < meio_tela:
-        if mega.x > 340:
-            camera.camera_x -= mega.speed
-        if camera.camera_x < 0:
-            camera.camera_x = 0
+    segment = stage.selected_sprite
 
-    if mega.y - camera.camera_y > 640:
+    camera.cam_move(
+        segment,
+        [mega.x, mega.y],
+        mega.speed,
+        mega.y_speed,
+        mega.left,
+    )
+    # pos_relativa = mega.x - global_var.camera_x
+    # meio_tela = screen.display_screen.get_width() / 2
+    # if mega.left and pos_relativa > meio_tela and mega.x < 2700:
+    # global_var.camera_x += mega.speed
+    # elif not mega.left and pos_relativa < meio_tela:
+    # if mega.x > 340:
+    # global_var.camera_x -= mega.speed
+    # if global_var.camera_x < 0:
+    # global_var.camera_x = 0
+
+    if mega.y + global_var.camera_y > 1080:
         mega.respawn()
 
     pygame.display.flip()
 
-    dt = clock.tick(50)
+    dt = clock.tick(60)
 
 quit()

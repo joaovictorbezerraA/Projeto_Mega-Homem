@@ -12,3 +12,7 @@ stage_sprites = image_loader("./sprites/Stage")
 
 debug_mode = False
 wall_debug = False
+
+camera_x = 0
+camera_y = 0
+screen_ch = 0

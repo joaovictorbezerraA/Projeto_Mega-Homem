@@ -34,6 +34,7 @@ st0 = pygame.Rect(5 * bw, 6 * bh - 1, bw, 6 * bh)
 st1 = pygame.Rect(10 * bw, 6 * bh - 1, bw, 2 * bh)
 st2 = pygame.Rect(21 * bw, 6 * bh - 1, bw, 6 * bh)
 st3 = pygame.Rect(53 * bw, 4 * bh - 1, bw, 6 * bh)
+st4 = pygame.Rect(61 * bw, -3 * bh, bw, 7 * bh)
 
 w0 = pygame.Rect(10 * bw, 8 * bh, 2 * bw + 5, 4 * bh)
 w1 = pygame.Rect(0, 6 * bh, 12 * bw + 10, bh)
@@ -79,4 +80,5 @@ og_stair_col = [
     st1,
     st2,
     st3,
+    st4,
 ]

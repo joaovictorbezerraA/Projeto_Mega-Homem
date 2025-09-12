@@ -115,7 +115,6 @@ class Megaman(Collision):
                         self.y_speed = 0
                         self.y = mega_colision.top
 
-                    print(mega_colision.left, coll.right)
                 else:
                     if mega_colision.top + 55 <= coll.top:
                         self.on_stair = False
@@ -125,10 +124,14 @@ class Megaman(Collision):
             self.falling()
 
     def on_stair_coll(self, events, mega_colision, stair_collisions):
-        cx = camera.camera_x
+        cx = global_var.camera_x
+        cx = global_var.camera_x
         for coll in stair_collisions:
             if mega_colision.colliderect(coll):
-                if mega_colision.bottom <= coll.top + 10:
+                if (
+                    mega_colision.bottom <= coll.top + 10
+                    or mega_colision.top >= mega_colision.bottom - 20
+                ):
                     self.on_stair = False
                 for event in events:
                     if event.type == pygame.KEYDOWN and (
@@ -138,51 +141,51 @@ class Megaman(Collision):
                             mega_colision.top < coll.bottom
                             or mega_colision.bottom > coll.top
                         ):
-                            if mega_colision.bottom + 11 < coll.bottom:
+                            if (
+                                mega_colision.bottom + 11 < coll.bottom
+                                and not self.on_stair
+                            ):
                                 self.y += 11
                             self.on_stair = True
                             mega_colision.right = coll.left + cx
                             self.x = coll.left + cx
                             self.x_coll = self.x - cx
-                    if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
-                        self.on_stair = False
 
     def is_idle(self):
         if not (self.keys_pressed[pygame.K_d] or self.keys_pressed[pygame.K_a]) or (
-            self.keys_pressed[pygame.K_a]
-            and self.keys_pressed[pygame.K_d]
-            or self.keys_pressed[pygame.K_w]
-            or self.keys_pressed[pygame.K_s]
+            self.keys_pressed[pygame.K_a] and self.keys_pressed[pygame.K_d]
         ):
             self.moving = False
-            self.animation_index = 0
-            self.y_coll = self.y + pixel_offset_y
-            self.x_coll = self.x + pixel_offset - camera.camera_x
+            if not self.on_stair:
+                self.animation_index = 0
+            self.y_coll = self.y + pixel_offset_y - global_var.camera_y
+            self.x_coll = self.x + pixel_offset - global_var.camera_x
 
     def move_right(self):
-        if self.keys_pressed[pygame.K_d] and self.x - camera.camera_x < 720:
+        if self.keys_pressed[pygame.K_d] and self.x - global_var.camera_x < 720:
             self.left = True
             if not self.on_stair:
                 self.moving = True
                 for _ in range(self.speed):
                     self.x += 1
-                    self.x_coll = self.x + pixel_offset - camera.camera_x
+                    self.x_coll = self.x + pixel_offset - global_var.camera_x
         self.is_idle()
         self.y_coll = self.y + 1
 
     def move_left(self):
-        if self.keys_pressed[pygame.K_a] and self.x - camera.camera_x > -10:
+        if self.keys_pressed[pygame.K_a] and self.x - global_var.camera_x > -10:
             self.left = False
             if not self.on_stair:
                 self.moving = True
                 for _ in range(self.speed):
                     self.x -= 1
-                    self.x_coll = self.x + pixel_offset - camera.camera_x + 3
+                    self.x_coll = self.x + pixel_offset - global_var.camera_x + 3
         self.is_idle()
         self.y_coll = self.y + 1
 
     def move_stair(self):
-        cx = camera.camera_x
+        cx = global_var.camera_x
+        cy = global_var.camera_y
         if self.on_stair:
             if self.jumping:
                 self.y_speed = 0
@@ -195,6 +198,7 @@ class Megaman(Collision):
                 self.moving = True
                 self.vertical_move()
             self.x_coll = self.x - cx + 1
+            self.y_coll = self.y - cy
 
     def jump(self):
         if self.onground or self.on_stair:
@@ -209,14 +213,18 @@ class Megaman(Collision):
             self.jumping = False
 
         if self.jumping:
+            cy = global_var.camera_y
             for i in range(20):
                 if i % 2:
                     self.y -= 1
                     self.y_coll = self.y
+            self.y_coll -= cy
 
     def vertical_move(self, offset=0):
         self.y += self.y_speed
-        self.y_coll = self.y + offset
+        self.y_coll = self.y + offset - global_var.camera_y
+        if global_var.screen_ch:
+            self.handle_transition()
 
     def walk_animation(self):
         if (
@@ -248,7 +256,11 @@ class Megaman(Collision):
 
     def stair_animation(self):
         if self.moving:
-            self.sprite = self.stair_sprite[0]
+            if self.animation_index <= 10 or 20 < self.animation_index <= 30:
+                self.sprite = self.stair_sprite[0]
+            else:
+                self.sprite = pygame.transform.flip(self.stair_sprite[0], 1, 0)
+            self.animation_index += 1
 
     def animations(self):
         if self.animation_index == 39:
@@ -264,13 +276,16 @@ class Megaman(Collision):
             self.falling_animation()
         self.display_to_blit.blit(
             pygame.transform.scale_by(self.sprite, 3),
-            (
-                self.x - camera.camera_x,
-                self.y - camera.camera_y,
-            ),
+            (self.x - global_var.camera_x, self.y - global_var.camera_y),
         )
 
     def respawn(self):
         self.x = self.init_x
         self.y = self.init_y
-        camera.camera_x = 0
+        global_var.camera_x = 0
+
+    def handle_transition(self):
+        if self.y_speed <= 0:
+            self.y -= 60
+        else:
+            self.y += 60

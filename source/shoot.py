@@ -28,13 +28,13 @@ class Shoot:
                 self.screen.blit(
                     pygame.transform.scale_by(self.buster_sprite[0], 3),
                     (
-                        shoots[i][0].shoot_x - camera.camera_x,
+                        shoots[i][0].shoot_x - global_var.camera_x,
                         shoots[i][0].shoot_y,
                     ),
                 )
 
     def move_shoot(self, shoots):
-        cx = camera.camera_x
+        cx = global_var.camera_x
         for i in range(len(shoots) - 1, -1, -1):
             if shoots[i][0].enable_sprite:
                 for j in range(120):
