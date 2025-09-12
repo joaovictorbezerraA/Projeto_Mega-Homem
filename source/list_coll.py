@@ -5,6 +5,7 @@ bh = 3 * 16
 of = 5
 th = 3  # wall__collision_thickness
 
+selected_seg = "Cutman_Stage_Segment_1"
 
 b0 = pygame.Rect(8 * bw, 10 * bh, 2 * bw, 2 * bh)
 b1 = pygame.Rect(8 * bw, 4 * bh, 2 * bw, 2 * bh)
@@ -82,3 +83,40 @@ og_stair_col = [
     st3,
     st4,
 ]
+
+f2_0 = pygame.Rect(48 * bw, 12 * bh, 11 * bw, bh)
+f2_1 = pygame.Rect(54 * bw, 9 * bh, 3 * bw, bh)
+f2_2 = pygame.Rect(59 * bw, 10 * bh, bw, 2 * bh)
+f2_3 = pygame.Rect(57 * bw, 4 * bh, 5 * bw, 2 * bh)
+f2_4 = pygame.Rect(60 * bw, -3 * bh, 2 * bw, bh)
+
+
+w2_1 = pygame.Rect(60 * bw, 6 * bh, bw, 4 * bh)
+w2_2 = pygame.Rect(60 * bw, -2, bw, 2 * bh)
+w2_3 = pygame.Rect(62 * bw, 0, bw, 4 * bh)
+w2_4 = pygame.Rect(36 * bw, 10 * bh, 2 * bw, 2 * bh)
+w2_5 = pygame.Rect(62 * bw, -15 * bh, bw, 16 * bh)
+
+st2_0 = pygame.Rect(61 * bw, -3 * bh, bw, 7 * bh)
+
+og_floor_col_2 = [
+    f2_0,
+    f2_1,
+    f2_2,
+    f2_3,
+    f2_4,
+    w2_1,
+    w2_2,
+    w2_3,
+    w2_4,
+    w2_5,
+]
+
+og_stair_col_2 = [
+    st2_0,
+]
+
+collisions = {
+    "Cutman_Stage_Segment_1": [og_floor_col, og_stair_col],
+    "Cutman_Stage_Segment_2": [og_floor_col_2, og_stair_col_2],
+}

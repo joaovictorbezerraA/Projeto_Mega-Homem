@@ -57,6 +57,8 @@ class Stage(Stage_collisions, Megaman):
         if coordinates[0] < 2690:
             self.selected_sprite = "Cutman_Stage_Segment_1"
             self.used_sprite = pygame.transform.scale_by(self.sprites[0], 3)
+            self.selected_seg = "Cutman_Stage_Segment_1"
         if coordinates[0] >= 2690 or coordinates[1] < -30:
             self.selected_sprite = "Cutman_Stage_Segment_2"
             self.used_sprite = pygame.transform.scale_by(self.sprites[1], 3)
+            self.selected_seg = "Cutman_Stage_Segment_2"

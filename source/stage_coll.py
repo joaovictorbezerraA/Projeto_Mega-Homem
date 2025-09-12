@@ -2,7 +2,8 @@ import pygame
 import camera
 import global_var
 import copy
-from list_coll import og_floor_col, og_stair_col
+import list_coll
+from list_coll import collisions
 
 bw = 3 * 16
 bh = 3 * 16
@@ -12,19 +13,29 @@ th = 10  # wall__collision_thickness
 
 class Stage_collisions:
     def __init__(self):
-        self.floor_collisions = copy.deepcopy(og_floor_col)
-        self.stairs_collisions = copy.deepcopy(og_stair_col)
+        self.floor_collisions = copy.deepcopy(list_coll.og_floor_col)
+        self.stairs_collisions = copy.deepcopy(list_coll.og_stair_col)
+        self.selected_seg = "Cutman_Stage_Segment_1"
+        self.og_f_coll = collisions[self.selected_seg][0]
+        self.og_s_coll = collisions[self.selected_seg][1]
+
+    def update_coll_list(self):
+        self.og_f_coll = collisions[self.selected_seg][0]
+        self.og_s_coll = collisions[self.selected_seg][1]
+        self.floor_collisions = copy.deepcopy((self.og_f_coll))
+        self.stairs_collisions = copy.deepcopy((self.og_s_coll))
 
     def update_coll(self):
+        self.update_coll_list()
         cx = global_var.camera_x
         cy = global_var.camera_y
         for i in range(len(self.floor_collisions)):
-            self.floor_collisions[i][0] = og_floor_col[i][0] - cx
-            self.floor_collisions[i][1] = og_floor_col[i][1] - cy
+            self.floor_collisions[i][0] = self.og_f_coll[i][0] - cx
+            self.floor_collisions[i][1] = self.og_f_coll[i][1] - cy
 
     def update_stair_coll(self):
         cx = global_var.camera_x
         cy = global_var.camera_y
         for i in range(len(self.stairs_collisions)):
-            self.stairs_collisions[i][0] = og_stair_col[i][0] - cx
-            self.stairs_collisions[i][1] = og_stair_col[i][1] - cy
+            self.stairs_collisions[i][0] = self.og_s_coll[i][0] - cx
+            self.stairs_collisions[i][1] = self.og_s_coll[i][1] - cy
