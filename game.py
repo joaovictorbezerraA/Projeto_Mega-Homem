@@ -59,8 +59,6 @@ while running:
                     global_var.wall_debug = True
                 else:
                     global_var.wall_debug = False
-            if event.key == pygame.K_l:
-                pygame.time.wait(1000)
 
     col_mega = mega.coll()
 
