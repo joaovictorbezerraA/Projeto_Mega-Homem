@@ -25,6 +25,7 @@ def cam_move(
             if global_var.camera_x < 0:
                 global_var.camera_x = 0
     elif segment == "Cutman_Stage_Segment_2":
+        print(pos_relativa_y)
         if pos_relativa_y < -30:
             global_var.camera_y -= 720
         if pos_relativa_y > 720:
