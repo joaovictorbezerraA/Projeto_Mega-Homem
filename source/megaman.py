@@ -115,7 +115,6 @@ class Megaman(Collision):
                     ):
                         self.jumping = False
                         mega_colision.top = coll.bottom
-                        self.y_speed = 0
                         self.y = mega_colision.top + cy
 
                 else:
@@ -137,7 +136,11 @@ class Megaman(Collision):
                     self.on_stair = False
                 for event in events:
                     if event.type == pygame.KEYDOWN and (
-                        event.key == pygame.K_w or event.key == pygame.K_s
+                        event.key == pygame.K_w
+                        or (
+                            event.key == pygame.K_s
+                            and mega_colision.bottom < coll.bottom + 1
+                        )
                     ):
                         if (
                             mega_colision.top < coll.bottom
