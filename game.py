@@ -85,7 +85,6 @@ while running:
         segment,
         [mega.x, mega.y],
         mega.speed,
-        mega.y_speed,
         mega.left,
     )
     # pos_relativa = mega.x - global_var.camera_x
@@ -101,6 +100,8 @@ while running:
     if mega.y + global_var.camera_y > 1080:
         mega.respawn()
 
+    print(mega.x, mega.y)
+    print(segment)
     pygame.display.flip()
 
     dt = clock.tick(60)

@@ -16,11 +16,15 @@ class Stage(Stage_collisions, Megaman):
         self.sprites = [
             stage_sprites["Cutman_Stage_Segment_1"],
             stage_sprites["Cutman_Stage_Segment_2"],
+            stage_sprites["Cutman_Stage_Segment_3"],
+            stage_sprites["Cutman_Stage_Segment_4"],
         ]
 
         self.sprite_pos = {
             "Cutman_Stage_Segment_1": [0, 0],
             "Cutman_Stage_Segment_2": [2304, -3072],
+            "Cutman_Stage_Segment_3": [2304, -3072],
+            "Cutman_Stage_Segment_4": [1280 * 3, -3072 * 2],
         }
 
         self.selected_sprite = "Cutman_Stage_Segment_1"
@@ -54,11 +58,32 @@ class Stage(Stage_collisions, Megaman):
         return self.stairs_collisions
 
     def change_segment(self, coordinates):
-        if coordinates[0] < 2690:
+        on_seg_1 = coordinates[0] < 2690
+        on_seg_2 = coordinates[0] >= 2690 or coordinates[1] < -30
+        on_seg_3 = coordinates[0] >= 2496 and coordinates[1] <= -2490
+        on_seg_4 = coordinates[0] >= 4410 or coordinates[1] <= -3120
+
+        if on_seg_1:
             self.selected_sprite = "Cutman_Stage_Segment_1"
-            self.used_sprite = pygame.transform.scale_by(self.sprites[0], 3)
+            self.used_sprite = pygame.transform.scale_by(
+                self.sprites[0].convert_alpha(), 3
+            )
             self.selected_seg = "Cutman_Stage_Segment_1"
-        if coordinates[0] >= 2690 or coordinates[1] < -30:
+        if not on_seg_3 and on_seg_2:
             self.selected_sprite = "Cutman_Stage_Segment_2"
-            self.used_sprite = pygame.transform.scale_by(self.sprites[1], 3)
+            self.used_sprite = pygame.transform.scale_by(
+                self.sprites[1].convert_alpha(), 3
+            )
             self.selected_seg = "Cutman_Stage_Segment_2"
+        if not on_seg_4 and on_seg_3:
+            self.selected_sprite = "Cutman_Stage_Segment_3"
+            self.used_sprite = pygame.transform.scale_by(
+                self.sprites[2].convert_alpha(), 3
+            )
+            self.selected_seg = "Cutman_Stage_Segment_3"
+        if on_seg_4:
+            self.selected_sprite = "Cutman_Stage_Segment_4"
+            self.used_sprite = pygame.transform.scale_by(
+                self.sprites[3].convert_alpha(), 3
+            )
+            self.selected_seg = "Cutman_Stage_Segment_4"

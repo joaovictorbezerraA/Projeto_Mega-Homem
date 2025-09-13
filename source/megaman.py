@@ -73,15 +73,15 @@ class Megaman(Collision):
         colliding = False
         for coll in collision:
             if mega_colision.colliderect(coll):
-                if not self.on_stair:
+                if not self.on_stair and not global_var.screen_ch:
                     if (
-                        mega_colision.left <= coll.right + self.speed - 10
+                        mega_colision.left <= coll.right + self.speed + 10
                         and mega_colision.right > coll.right + self.speed
                         and mega_colision.bottom > coll.top + self.y_speed + 1
                         and mega_colision.top < coll.bottom - 1 - self.y_speed
                     ):
                         mega_colision.left = coll.right + 1
-                        self.x += self.speed
+                        self.x = mega_colision.left - 13 + cx
                     elif (
                         mega_colision.right <= coll.left + self.speed + 10
                         and mega_colision.left < coll.left + self.speed
@@ -132,7 +132,7 @@ class Megaman(Collision):
             if mega_colision.colliderect(coll):
                 if (
                     mega_colision.bottom <= coll.top + 10
-                    or mega_colision.top >= mega_colision.bottom - 20
+                    or mega_colision.top >= coll.bottom - 20
                 ):
                     self.on_stair = False
                 for event in events:
@@ -277,7 +277,7 @@ class Megaman(Collision):
         else:
             self.falling_animation()
         self.display_to_blit.blit(
-            pygame.transform.scale_by(self.sprite, 3),
+            pygame.transform.scale_by(self.sprite.convert_alpha(), 3),
             (self.x - global_var.camera_x, self.y - global_var.camera_y),
         )
 

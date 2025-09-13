@@ -29,7 +29,7 @@ class Shoot:
                     pygame.transform.scale_by(self.buster_sprite[0], 3),
                     (
                         shoots[i][0].shoot_x - global_var.camera_x,
-                        shoots[i][0].shoot_y,
+                        shoots[i][0].shoot_y - global_var.camera_y,
                     ),
                 )
 

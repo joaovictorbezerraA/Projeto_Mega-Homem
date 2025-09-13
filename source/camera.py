@@ -9,7 +9,6 @@ def cam_move(
     segment,
     pos,
     speed_x,
-    speed_y,
     right,
 ):
     meio = 360
@@ -17,7 +16,7 @@ def cam_move(
     pos_relativa_y = pos[1] - global_var.camera_y
 
     if segment == "Cutman_Stage_Segment_1":
-        if right and pos_relativa_x > meio and pos[0] < 2700:
+        if right and pos_relativa_x > meio and pos[0] < 2736:
             global_var.camera_x += speed_x
         elif not right and pos_relativa_x < meio:
             if pos[0] > 340:
@@ -25,8 +24,25 @@ def cam_move(
             if global_var.camera_x < 0:
                 global_var.camera_x = 0
     elif segment == "Cutman_Stage_Segment_2":
-        print(pos_relativa_y)
-        if pos_relativa_y < -30:
-            global_var.camera_y -= 720
-        if pos_relativa_y > 720:
-            global_var.camera_y += 720
+        if pos_relativa_y < -85:
+            global_var.camera_y -= 768
+            global_var.screen_ch = True
+        elif pos_relativa_y > 768:
+            global_var.camera_y += 768
+            global_var.screen_ch = True
+        else:
+            global_var.screen_ch = False
+    elif segment == "Cutman_Stage_Segment_3":
+        if right and pos_relativa_x > meio and pos[0] < 4244:
+            global_var.camera_x += speed_x
+        elif not right and pos_relativa_x < meio and pos[0] > 2736:
+            global_var.camera_x -= speed_x
+    elif segment == "Cutman_Stage_Segment_4":
+        if pos_relativa_y < -85:
+            global_var.camera_y -= 768
+            global_var.screen_ch = True
+        elif pos_relativa_y > 768:
+            global_var.camera_y += 768
+            global_var.screen_ch = True
+        else:
+            global_var.screen_ch = False
