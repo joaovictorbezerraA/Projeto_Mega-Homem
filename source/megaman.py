@@ -17,7 +17,7 @@ pygame.init()
 class Megaman(Collision):
     def __init__(self, x, y, width=14 * 3, height=23 * 3):
         self.gravitty = 1
-        self.speed = 6
+        self.speed = 5
         self.x = x
         self.y = y
         self.init_x = x
