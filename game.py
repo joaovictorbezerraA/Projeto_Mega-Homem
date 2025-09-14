@@ -9,15 +9,18 @@ from screen_config import Screen
 from shoot import Shoot
 from glob_timer import Timer
 from bunby_helli import Helicopter
+from blaster import Blaster
 from stage import Stage
 import camera
 import global_var
+from random import randint
 
 pygame.init()
 
 screen = Screen()
 clock = pygame.time.Clock()
 event_timer = pygame.time.Clock()
+timer = 5
 
 running = True
 soma = 0
@@ -29,9 +32,12 @@ mega = Megaman(
 buster = Shoot(mega.x_coll + 30, mega.y_coll)
 col_mega = mega.coll()
 stage = Stage()
+bundy = Helicopter(0, 0)
+blaster = Blaster(600, 600)
 
 shoots = []
-bunby = Helicopter(600, 100)
+random_enemies = []
+enemies_bl = []
 while running:
     Timer(clock)
     screen.display_screen.fill("#00e8d8")
@@ -44,7 +50,7 @@ while running:
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
                 mega.jump()
-            if event.key == pygame.K_j and buster.shoot_amount < 3:
+            if event.key == pygame.K_j and global_var.shoots < 3:
                 buster_shoot = Shoot(mega.x, mega.y - 15)
                 mega.shoot_direction = mega.left
                 shoots.append((buster_shoot, mega.shoot_direction))
@@ -55,10 +61,10 @@ while running:
                 else:
                     global_var.debug_mode = False
             if event.key == pygame.K_o:
-                if global_var.wall_debug is False:
-                    global_var.wall_debug = True
+                if global_var.disable_bunby_spawn is False:
+                    global_var.disable_bunby_spawn = True
                 else:
-                    global_var.wall_debug = False
+                    global_var.disable_bunby_spawn = False
 
     col_mega = mega.coll(1)
 
@@ -71,15 +77,17 @@ while running:
     mega.colliding(col_mega, floor_col)
     mega.on_stair_coll(events, col_mega, stair_col)
 
+    segment = stage.selected_sprite
+
     mega.move_left()
     mega.move_right()
     mega.move_stair()
     mega.jumping_state()
     mega.animations()
+    stage.spawn(segment, enemies_bl)
     buster.run(shoots)
-    bunby.run(mega.x, mega.y, col_mega)
-
-    segment = stage.selected_sprite
+    blaster.run(enemies_bl)
+    print(enemies_bl)
 
     camera.cam_move(
         segment,
@@ -87,23 +95,20 @@ while running:
         mega.speed,
         mega.left,
     )
-    # pos_relativa = mega.x - global_var.camera_x
-    # meio_tela = screen.display_screen.get_width() / 2
-    # if mega.left and pos_relativa > meio_tela and mega.x < 2700:
-    # global_var.camera_x += mega.speed
-    # elif not mega.left and pos_relativa < meio_tela:
-    # if mega.x > 340:
-    # global_var.camera_x -= mega.speed
-    # if global_var.camera_x < 0:
-    # global_var.camera_x = 0
+
+    bundy.run(random_enemies, mega.x, mega.y, col_mega, shoots)
 
     if mega.y + global_var.camera_y > 1080:
         mega.respawn()
-    print(mega.x, mega.y)
-    print(segment)
 
     pygame.display.flip()
 
-    dt = clock.tick(60)
+    dt = clock.tick(60) / 1000
+    timer -= dt
+
+    if not global_var.disable_bunby_spawn:
+        if timer <= 0:
+            random_enemies = bundy.respawn_bunby(segment, random_enemies)
+            timer = 5
 
 quit()

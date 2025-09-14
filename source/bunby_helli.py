@@ -1,8 +1,10 @@
+import random
 import pygame
 import global_var
 from enemy import Enemy
 from screen_config import Screen
 from megaman import Megaman
+from random import randint
 
 pygame.init()
 
@@ -10,79 +12,95 @@ clock = pygame.time.Clock()
 
 
 class Helicopter(Enemy):
-    def __init__(self, x, y, width=13 * 3, height=15 * 3, health=4, damage=1):
-        super().__init__(x, y, width, height, health, damage)
+    def __init__(self, x=600, y=0, width=13 * 3, height=15 * 3, health=3, damage=1):
+        super().__init__(
+            x,
+            y,
+            width,
+            height,
+            health,
+            damage,
+        )
         self.x_coll = self.x
         self.y_coll = self.y
         self.sprites = [
             global_var.helicopter_sprites["Fly_1"],
             global_var.helicopter_sprites["Fly_2"],
         ]
-        self.used_sprite = pygame.transform.scale_by(self.sprites[0], 3)
-        self.anim_inx = 0
-
-        self.screen_to_blit = Screen.display_screen
+        self.used_sprite = pygame.transform.scale_by(self.sprites[0].convert_alpha(), 3)
 
         self.collision = self.coll(0)
 
-        self.direction = True
+        self.direction = False
 
         self.attacking = False
         self.target = self.y
 
-    def animation(self):
+    def animation(self, bundy):
         cx = global_var.camera_x
         cy = global_var.camera_y
-        if self.anim_inx == 7:
-            self.anim_inx = 0
-        if self.anim_inx == 3:
-            self.used_sprite = self.sprites[1]
-            self.used_sprite = pygame.transform.scale_by(self.used_sprite, 3)
-            self.screen_to_blit.blit(self.used_sprite, (self.x - cx, self.y - cy))
-        if self.anim_inx == 6:
-            self.used_sprite = self.sprites[0]
-            self.used_sprite = pygame.transform.scale_by(self.used_sprite, 3)
-        pygame.draw.rect(self.screen_to_blit, "blue", self.collision)
-        self.screen_to_blit.blit(self.used_sprite, (self.x - cx, self.y - cy))
-        self.anim_inx += 1
+        for i in range(len(bundy)):
+            if bundy[i].anim_inx == 7:
+                bundy[i].anim_inx = 0
+            if bundy[i].anim_inx == 3:
+                bundy[i].used_sprite = self.sprites[1].convert_alpha()
+                bundy[i].used_sprite = pygame.transform.scale_by(
+                    bundy[i].used_sprite, 3
+                )
+                bundy[i].screen_to_blit.blit(
+                    bundy[i].used_sprite, (bundy[i].x - cx, bundy[i].y - cy)
+                )
+            if bundy[i].anim_inx == 6:
+                bundy[i].used_sprite = self.sprites[0].convert_alpha()
+                bundy[i].used_sprite = pygame.transform.scale_by(
+                    bundy[i].used_sprite, 3
+                )
+            pygame.draw.rect(self.screen_to_blit, "blue", bundy[i].collision)
+            bundy[i].screen_to_blit.blit(
+                bundy[i].used_sprite, (bundy[i].x - cx, bundy[i].y - cy)
+            )
+            bundy[i].anim_inx += 1
 
-    def move(self):
+    def move(self, enemies):
         cx = global_var.camera_x
-        cy = global_var.camera_y
-        for j in range(100):
-            if j * 10 == 0:
-                if self.x >= 720 + cx:
-                    self.direction = False
-                if self.x <= -50 + cx:
-                    self.direction = True
-                if self.direction:
-                    self.x += 5
-                    self.x_coll += 5
-                else:
-                    self.x -= 5
-                    self.x_coll -= 5
-                self.collision = self.coll(0, 5, 10)
+        for i in range(len(enemies)):
+            for j in range(100):
+                if j * 10 == 0:
+                    if enemies[i].x >= 720 + cx:
+                        enemies[i].direction = False
+                    if enemies[i].x <= -50 + cx:
+                        enemies[i].direction = True
+                    if enemies[i].direction:
+                        enemies[i].x += 4
+                        enemies[i].x_coll += 4
+                    else:
+                        enemies[i].x -= 4
+                        enemies[i].x_coll -= 4
+                    enemies[i].collision = enemies[i].coll(0, 5, 10)
 
-    def attack(self, mega_x, mega_y):
-        if (
-            mega_x - 100 < self.x < mega_x + 100
-            and mega_y - 200 < self.y < mega_y + 200
-        ):
-            if not self.attacking:
-                self.attacking = True
-                self.target = 1
+    def attack(self, enemies, mega_x, mega_y):
+        for i in range(len(enemies)):
+            if (
+                mega_x - 100 < enemies[i].x < mega_x + 100
+                and mega_y - 180 < enemies[i].y < mega_y + 180
+            ):
+                if not enemies[i].attacking:
+                    enemies[i].attacking = True
+                    enemies[i].target = 1
 
-            if self.attacking and not self.direction and mega_x < self.x < mega_x + 100:
-                self.down(mega_y)
-            elif not self.direction and mega_x - 100 < self.x < mega_x:
-                self.up()
+                if (
+                    enemies[i].attacking
+                    and not enemies[i].direction
+                    and mega_x < enemies[i].x < mega_x + 100
+                ):
+                    enemies[i].down(mega_y)
+                elif not enemies[i].direction and mega_x - 100 < enemies[i].x < mega_x:
+                    enemies[i].up()
 
-            if self.direction and mega_x - 100 < self.x < mega_x:
-                self.down(mega_y)
-            elif self.direction and mega_x < self.x < mega_x + 100:
-                self.up()
-
-        print(self.target)
+                if enemies[i].direction and mega_x - 100 < enemies[i].x < mega_x:
+                    enemies[i].down(mega_y)
+                elif enemies[i].direction and mega_x < enemies[i].x < mega_x + 100:
+                    enemies[i].up()
 
     def down(self, mega_y):
         if self.y - 7 > mega_y:
@@ -98,12 +116,22 @@ class Helicopter(Enemy):
             self.y += 7
         self.y_coll = self.y
 
-    def check_col(self, mega_col):
-        if mega_col.colliderect(self.collision):
-            Megaman.take_damage(1)
+    def respawn_bunby(self, segment, rand_enemies):
+        spawn_x = global_var.camera_x
+        if segment == "Cutman_Stage_Segment_1" and len(rand_enemies) < 8:
+            rand_enemies.append(Helicopter(720 + spawn_x, randint(100, 600)))
+        return rand_enemies
 
-    def run(self, mega_x, mega_y, mega_col):
-        self.animation()
-        self.move()
-        self.attack(mega_x, mega_y)
-        self.check_col(mega_col)
+    def delete(self, enemies):
+        cx = global_var.camera_x
+        for i in range(len(enemies) - 1, -1, -1):
+            if enemies[i].x - cx < -80 or enemies[i].x - cx > 760:
+                enemies.remove(enemies[i])
+
+    def run(self, enemies, mega_x, mega_y, mega_col, shoots):
+        self.delete(enemies)
+        self.animation(enemies)
+        self.take_damage(enemies, shoots)
+        self.move(enemies)
+        self.attack(enemies, mega_x, mega_y)
+        self.check_col(enemies, mega_col)
