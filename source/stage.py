@@ -18,6 +18,9 @@ class Stage(Stage_collisions, Megaman):
             stage_sprites["Cutman_Stage_Segment_2"],
             stage_sprites["Cutman_Stage_Segment_3"],
             stage_sprites["Cutman_Stage_Segment_4"],
+            stage_sprites["Cutman_Stage_Segment_5"],
+            stage_sprites["Cutman_Stage_Segment_6"],
+            stage_sprites["Cutman_Stage_Segment_7"],
         ]
 
         self.sprite_pos = {
@@ -25,6 +28,9 @@ class Stage(Stage_collisions, Megaman):
             "Cutman_Stage_Segment_2": [2304, -3072],
             "Cutman_Stage_Segment_3": [2304, -3072],
             "Cutman_Stage_Segment_4": [1280 * 3, -3072 * 2],
+            "Cutman_Stage_Segment_5": [1280 * 3, -3072 * 2],
+            "Cutman_Stage_Segment_6": [1280 * 4 + 256, -3072 * 2],
+            "Cutman_Stage_Segment_7": [1280 * 4 + 256, -3072 * 2 + 768 * 3],
         }
 
         self.selected_sprite = "Cutman_Stage_Segment_1"
@@ -58,32 +64,54 @@ class Stage(Stage_collisions, Megaman):
         return self.stairs_collisions
 
     def change_segment(self, coordinates):
-        on_seg_1 = coordinates[0] < 2690
+        on_seg_1 = coordinates[0] < 2690 and coordinates[1] > -30
         on_seg_2 = coordinates[0] >= 2690 or coordinates[1] < -30
         on_seg_3 = coordinates[0] >= 2496 and coordinates[1] <= -2490
         on_seg_4 = coordinates[0] >= 4410 or coordinates[1] <= -3120
+        on_seg_5 = coordinates[0] >= 4120 and coordinates[1] <= -5560
+        on_seg_6 = coordinates[0] >= 5412 and coordinates[1] > -5560
+        on_seg_7 = coordinates[0] >= 5412 and coordinates[1] > -3822
 
-        if on_seg_1:
-            self.selected_sprite = "Cutman_Stage_Segment_1"
+        if on_seg_7:
+            self.selected_sprite = "Cutman_Stage_Segment_7"
             self.used_sprite = pygame.transform.scale_by(
-                self.sprites[0].convert_alpha(), 3
+                self.sprites[6].convert_alpha(), 3
             )
-            self.selected_seg = "Cutman_Stage_Segment_1"
-        if not on_seg_3 and on_seg_2:
-            self.selected_sprite = "Cutman_Stage_Segment_2"
+            self.selected_seg = "Cutman_Stage_Segment_7"
+
+        elif on_seg_6:
+            self.selected_sprite = "Cutman_Stage_Segment_6"
             self.used_sprite = pygame.transform.scale_by(
-                self.sprites[1].convert_alpha(), 3
+                self.sprites[5].convert_alpha(), 3
             )
-            self.selected_seg = "Cutman_Stage_Segment_2"
-        if not on_seg_4 and on_seg_3:
-            self.selected_sprite = "Cutman_Stage_Segment_3"
+            self.selected_seg = "Cutman_Stage_Segment_6"
+        elif on_seg_5:
+            self.selected_sprite = "Cutman_Stage_Segment_5"
             self.used_sprite = pygame.transform.scale_by(
-                self.sprites[2].convert_alpha(), 3
+                self.sprites[4].convert_alpha(), 3
             )
-            self.selected_seg = "Cutman_Stage_Segment_3"
-        if on_seg_4:
+            self.selected_seg = "Cutman_Stage_Segment_5"
+        elif on_seg_4:
             self.selected_sprite = "Cutman_Stage_Segment_4"
             self.used_sprite = pygame.transform.scale_by(
                 self.sprites[3].convert_alpha(), 3
             )
             self.selected_seg = "Cutman_Stage_Segment_4"
+        elif on_seg_3:
+            self.selected_sprite = "Cutman_Stage_Segment_3"
+            self.used_sprite = pygame.transform.scale_by(
+                self.sprites[2].convert_alpha(), 3
+            )
+            self.selected_seg = "Cutman_Stage_Segment_3"
+        elif on_seg_2:
+            self.selected_sprite = "Cutman_Stage_Segment_2"
+            self.used_sprite = pygame.transform.scale_by(
+                self.sprites[1].convert_alpha(), 3
+            )
+            self.selected_seg = "Cutman_Stage_Segment_2"
+        elif on_seg_1:
+            self.selected_sprite = "Cutman_Stage_Segment_1"
+            self.used_sprite = pygame.transform.scale_by(
+                self.sprites[0].convert_alpha(), 3
+            )
+            self.selected_seg = "Cutman_Stage_Segment_1"
