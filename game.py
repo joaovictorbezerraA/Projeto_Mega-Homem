@@ -60,7 +60,7 @@ while running:
                 else:
                     global_var.wall_debug = False
 
-    col_mega = mega.coll()
+    col_mega = mega.coll(1)
 
     k = pygame.key.get_pressed()
     mega.keys_pressed = k
@@ -77,7 +77,7 @@ while running:
     mega.jumping_state()
     mega.animations()
     buster.run(shoots)
-    bunby.run()
+    bunby.run(mega.x, mega.y, col_mega)
 
     segment = stage.selected_sprite
 
@@ -99,9 +99,9 @@ while running:
 
     if mega.y + global_var.camera_y > 1080:
         mega.respawn()
-
     print(mega.x, mega.y)
     print(segment)
+
     pygame.display.flip()
 
     dt = clock.tick(60)

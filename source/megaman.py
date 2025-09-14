@@ -61,8 +61,8 @@ class Megaman(Collision):
     def falling(self):
         if not self.on_stair:
             self.y_speed = self.gravitty * self.falling_counter
-            if self.y_speed > 30:
-                self.y_speed = 30
+            if self.y_speed > 22:
+                self.y_speed = 22
             self.vertical_move(pixel_offset_y)
             self.falling_counter += 0.38
 
@@ -119,6 +119,7 @@ class Megaman(Collision):
 
                 else:
                     if mega_colision.top + 55 <= coll.top:
+                        self.x -= 8
                         self.on_stair = False
 
         if not colliding:
@@ -136,7 +137,10 @@ class Megaman(Collision):
                     self.on_stair = False
                 for event in events:
                     if event.type == pygame.KEYDOWN and (
-                        event.key == pygame.K_w
+                        (
+                            event.key == pygame.K_w
+                            and mega_colision.bottom > coll.top + 1
+                        )
                         or (
                             event.key == pygame.K_s
                             and mega_colision.bottom < coll.bottom + 1
@@ -168,7 +172,7 @@ class Megaman(Collision):
 
     def move_right(self):
         cy = global_var.camera_y
-        if self.keys_pressed[pygame.K_d] and self.x - global_var.camera_x < 720:
+        if self.keys_pressed[pygame.K_d] and self.x - global_var.camera_x < 720 - 58:
             self.left = True
             if not self.on_stair:
                 self.moving = True
@@ -294,3 +298,7 @@ class Megaman(Collision):
             self.y -= 60
         else:
             self.y += 60
+
+    @staticmethod
+    def take_damage(damage):
+        print("a")

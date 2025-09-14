@@ -1,13 +1,25 @@
 import pygame
+import global_var
 
 
 class Collision:
-    def __init__(self, name, x, y, width, height):
+    def __init__(self, name, x_coll, y_coll, width, height):
         self.object = name
-        self.x_coll = x
-        self.y_coll = y
+        self.x_coll = x_coll
+        self.y_coll = y_coll
         self.width = width
         self.height = height
 
-    def coll(self):
-        return pygame.Rect(self.x_coll, self.y_coll, self.width, self.height)
+    def coll(self, megaman=0, offset_x=0, offset_y=0):
+        if not megaman:
+            cx = global_var.camera_x
+            cy = global_var.camera_y
+        else:
+            cx = 0
+            cy = 0
+        return pygame.Rect(
+            self.x_coll + offset_x - cx,
+            self.y_coll + offset_y - cy,
+            self.width,
+            self.height,
+        )
