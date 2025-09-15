@@ -108,6 +108,6 @@ while running:
     if not global_var.disable_bunby_spawn:
         if timer <= 0:
             random_enemies = bundy.respawn_bunby(segment, random_enemies)
-            timer = 5
+            timer = 3
 
 quit()

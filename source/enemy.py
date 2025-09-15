@@ -22,7 +22,6 @@ class Enemy(Collision):
                 if enemy.collision.colliderect(shoot[0].collision):
                     enemy.health -= 1
                     shoot[0].delete_shoot(shoots, shoot)
-                    print("ouch ouch, seu merda")
 
     def check_col(self, enemies, mega_col):
         for i in range(len(enemies) - 1, -1, -1):

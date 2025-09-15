@@ -119,7 +119,6 @@ class Helicopter(Enemy):
     def respawn_bunby(self, segment, rand_enemies):
         spawn_x = global_var.camera_x
         spawn_y = global_var.camera_y
-        print(segment)
         if (
             segment == "Cutman_Stage_Segment_1"
             or segment == "Cutman_Stage_Segment_3"
@@ -137,6 +136,7 @@ class Helicopter(Enemy):
                 or enemies[i].x - cx > 760
                 or enemies[i].y - cy < -30
                 or enemies[i].y - cy > 740
+                or enemies[i].health == 0
             ):
                 enemies.remove(enemies[i])
 

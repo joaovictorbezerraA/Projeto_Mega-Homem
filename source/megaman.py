@@ -301,4 +301,4 @@ class Megaman(Collision):
 
     @staticmethod
     def take_damage(damage):
-        print("a")
+        pass

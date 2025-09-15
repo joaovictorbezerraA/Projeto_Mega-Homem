@@ -336,7 +336,7 @@ f6_9 = pygame.Rect(119 * bw, -87 * bh, 2 * bw, bh)
 f6_10 = pygame.Rect(114 * bw, -83 * bh, 6 * bw, bh)
 f6_11 = pygame.Rect(120 * bw, -82 * bh, 7 * bw, bh)
 
-w6_0 = pygame.Rect(117 * bw, -112 * bh, bw, bh)
+w6_0 = pygame.Rect(117 * bw, -113 * bh, bw, 2 * bh)
 w6_1 = pygame.Rect(116 * bw, -111 * bh, bw, 2 * bh)
 w6_2 = pygame.Rect(114 * bw, -107 * bh, 2 * bw, 2 * bh)
 w6_3 = pygame.Rect(113 * bw, -105 * bh, bw, 48 * bh)
@@ -347,7 +347,7 @@ w6_6 = pygame.Rect(114 * bw, -90 * bh, 2 * bw, 2 * bh)
 st6_0 = pygame.Rect(124 * bw, -116 * bh - 1, bw, 7 * bh)
 st6_1 = pygame.Rect(118 * bw, -109 * bh - 1, bw, 2 * bh)
 st6_2 = pygame.Rect(118 * bw, -99 * bh - 1, bw, 5 * bh)
-st6_3 = pygame.Rect(114 * bw, -83 * bh - 1, bw, 7 * bh)
+st6_3 = pygame.Rect(114 * bw, -83 * bh - 1, bw, 7 * bh + 1)
 
 og_floor_col_6 = [
     f6_0,
