@@ -6,13 +6,11 @@ sys.path.insert(1, "source")
 from megaman import Megaman
 from screen_config import Screen
 from shoot import Shoot
-from glob_timer import Timer
 from bunby_helli import Helicopter
 from blaster import Blaster
 from stage import Stage
 import camera
 import global_var
-from random import randint
 
 pygame.init()
 
@@ -38,7 +36,6 @@ shoots = []
 random_enemies = []
 enemies_bl = []
 while running:
-    Timer(clock)
     screen.display_screen.fill("#00e8d8")
     stage.change_segment((mega.x, mega.y))
     stage.draw_stage()

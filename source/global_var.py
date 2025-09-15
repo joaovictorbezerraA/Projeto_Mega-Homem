@@ -12,6 +12,8 @@ blaster_sprites = image_loader("./sprites/Enemy_Sprites/Blaster_Sprites")
 
 stage_sprites = image_loader("./sprites/Stage")
 
+pj_sprites = image_loader("./sprites/Enemy_Sprites/Projectiles_Sprites")
+
 debug_mode = False
 wall_debug = False
 
