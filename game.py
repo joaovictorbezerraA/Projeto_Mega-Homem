@@ -4,7 +4,6 @@ import pygame
 sys.path.insert(1, "source")
 
 from megaman import Megaman
-import soil
 from screen_config import Screen
 from shoot import Shoot
 from glob_timer import Timer

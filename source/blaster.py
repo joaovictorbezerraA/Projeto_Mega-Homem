@@ -65,12 +65,12 @@ class Blaster(Enemy):
                     enemies[i].sprites[0].convert_alpha(), 3
                 )
 
+            enemies[i].collision = enemies[i].coll(0, 20)
             enemies[i].anim_inx += 1 - 2 * enemies[i].reverse
+            pygame.draw.rect(self.screen_to_blit, "red", enemies[i].collision)
             enemies[i].screen_to_blit.blit(
                 enemies[i].active_sprite, (enemies[i].x - cx, enemies[i].y - cy)
             )
-            enemies[i].collision = enemies[i].coll(0, 20)
-            pygame.draw.rect(self.screen_to_blit, "red", enemies[i].collision)
 
     def check_health(self, enemies):
         for i in range(len(enemies) - 1, -1, -1):
