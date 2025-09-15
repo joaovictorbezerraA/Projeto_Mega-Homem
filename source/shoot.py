@@ -54,8 +54,12 @@ class Shoot(Collision):
                             break
 
     def delete_shoot(self, shoots, shoot):
-        shoots.remove(shoot)
+        for i in range(len(shoots) - 1, -1, -1):
+            if shoots[i] == shoot:
+                shoots.remove(shoot)
         global_var.shoots -= 1
+        if global_var.shoots < 0:
+            global_var.shoots = 0
 
     def run(self, shoots):
         self.draw_sprite(shoots)
