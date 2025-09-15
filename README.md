@@ -1,2 +1,9 @@
 # Projeto_Mega-Homem
-Uma recriação da fase do cutman de Mega Man 1 em pygame
+The Cut Man stage from Mega Man 1 (NES) remade with pygame
+
+The following requisites are necessary to run the game:
+
+    * Python 3.11.0
+    * Pygame 2.6.1
+
+To run this program it's required to execute the file game.py with the python command
