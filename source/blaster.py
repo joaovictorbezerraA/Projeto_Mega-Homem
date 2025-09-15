@@ -1,11 +1,13 @@
 import pygame
 import global_var
 from enemy import Enemy
-from source import collision
+from projectile import Projectile
 
 
-class Blaster(Enemy):
-    def __init__(self, x=0, y=0, width=9 * 3, height=16 * 3, health=1, damage=1):
+class Blaster(Enemy, Projectile):
+    def __init__(
+        self, x=0, y=0, direction=True, width=9 * 3, height=16 * 3, health=1, damage=1
+    ):
         super().__init__(
             x,
             y,
