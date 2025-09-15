@@ -14,6 +14,7 @@ class Enemy(Collision):
         self.spawned = False
         self.anim_inx = 0
         self.screen_to_blit = Screen.display_screen
+        self.can_respawn = True
 
     def take_damage(self, enemies, shoots):
         for shoot in shoots:

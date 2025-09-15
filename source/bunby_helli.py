@@ -118,14 +118,26 @@ class Helicopter(Enemy):
 
     def respawn_bunby(self, segment, rand_enemies):
         spawn_x = global_var.camera_x
-        if segment == "Cutman_Stage_Segment_1" and len(rand_enemies) < 8:
-            rand_enemies.append(Helicopter(720 + spawn_x, randint(100, 600)))
+        spawn_y = global_var.camera_y
+        print(segment)
+        if (
+            segment == "Cutman_Stage_Segment_1"
+            or segment == "Cutman_Stage_Segment_3"
+            or segment == "Cutman_Stage_Segment_5"
+        ) and len(rand_enemies) < 8:
+            rand_enemies.append(Helicopter(720 + spawn_x, randint(100, 600) + spawn_y))
         return rand_enemies
 
     def delete(self, enemies):
         cx = global_var.camera_x
+        cy = global_var.camera_y
         for i in range(len(enemies) - 1, -1, -1):
-            if enemies[i].x - cx < -80 or enemies[i].x - cx > 760:
+            if (
+                enemies[i].x - cx < -80
+                or enemies[i].x - cx > 760
+                or enemies[i].y - cy < -30
+                or enemies[i].y - cy > 740
+            ):
                 enemies.remove(enemies[i])
 
     def run(self, enemies, mega_x, mega_y, mega_col, shoots):

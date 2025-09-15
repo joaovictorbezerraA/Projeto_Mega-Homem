@@ -84,10 +84,9 @@ while running:
     mega.move_stair()
     mega.jumping_state()
     mega.animations()
-    stage.spawn(segment, enemies_bl)
+    stage.spawn(segment, enemies_bl, mega.y)
     buster.run(shoots)
     blaster.run(enemies_bl)
-    print(enemies_bl)
 
     camera.cam_move(
         segment,
