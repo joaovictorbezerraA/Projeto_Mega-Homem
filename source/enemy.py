@@ -15,12 +15,14 @@ class Enemy(Collision):
         self.anim_inx = 0
         self.screen_to_blit = Screen.display_screen
         self.can_respawn = True
+        self.attacking = True
 
     def take_damage(self, enemies, shoots):
         for shoot in shoots:
             for enemy in enemies:
                 if enemy.collision.colliderect(shoot[0].collision):
-                    enemy.health -= 1
+                    if enemy.attacking:
+                        enemy.health -= 1
                     shoot[0].delete_shoot(shoots, shoot)
 
     def check_col(self, enemies, mega_col):

@@ -114,5 +114,5 @@ class Stage(Stage_collisions):
             )
             self.selected_seg = "Cutman_Stage_Segment_1"
 
-    def spawn(self, segment, enemies, mega_y):
-        spawn_enemies(segment, enemies, mega_y)
+    def spawn(self, segment, enemies):
+        spawn_enemies(segment, enemies)

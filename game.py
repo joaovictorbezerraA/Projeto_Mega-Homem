@@ -9,6 +9,7 @@ from shoot import Shoot
 from bunby_helli import Helicopter
 from blaster import Blaster
 from stage import Stage
+from projectile import Projectile
 import camera
 import global_var
 
@@ -31,6 +32,7 @@ col_mega = mega.coll()
 stage = Stage()
 bundy = Helicopter(0, 0)
 blaster = Blaster(600, 600)
+bullets = Projectile(1, 0, 0, 0)
 
 shoots = []
 random_enemies = []
@@ -80,9 +82,9 @@ while running:
     mega.move_stair()
     mega.jumping_state()
     mega.animations()
-    stage.spawn(segment, enemies_bl, mega.y)
+    stage.spawn(segment, enemies_bl)
     buster.run(shoots)
-    blaster.run(enemies_bl)
+    blaster.run(enemies_bl, bullets, shoots, col_mega)
 
     camera.cam_move(
         segment,
