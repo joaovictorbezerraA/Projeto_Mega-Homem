@@ -1,4 +1,4 @@
-from blaster import Blaster
+from enemy import Blaster
 from source import global_var
 
 offset = 3

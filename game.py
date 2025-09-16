@@ -6,8 +6,7 @@ sys.path.insert(1, "source")
 from megaman import Megaman
 from screen_config import Screen
 from shoot import Shoot
-from bunby_helli import Helicopter
-from blaster import Blaster
+from enemy import Helicopter, Blaster
 from stage import Stage
 from projectile import Projectile
 import camera
