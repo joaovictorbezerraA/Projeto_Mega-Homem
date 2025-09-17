@@ -2,7 +2,7 @@ import pygame
 import global_var
 from collision import Collision
 from screen_config import Screen
-from character_atributtes import Atributtes
+from character_attributes import Atributtes
 
 pygame.init()
 
