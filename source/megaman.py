@@ -2,7 +2,7 @@ import pygame
 import global_var
 from collision import Collision
 from screen_config import Screen
-import camera
+from character_atributtes import Atributtes
 
 pygame.init()
 
@@ -14,8 +14,9 @@ pixel_offset_y = 3
 pygame.init()
 
 
-class Megaman(Collision):
-    def __init__(self, x, y, width=14 * 3, height=23 * 3):
+class Megaman(Atributtes, Collision):
+    def __init__(self, x, y, hp=24, width=14 * 3, height=23 * 3):
+        super().__init__(hp)
         self.gravitty = 1
         self.speed = 5
         self.x = x
@@ -53,6 +54,8 @@ class Megaman(Collision):
         self.jump_sprites = [global_var.megaman_sprites["Mega_Jump"]]
 
         self.stair_sprite = [global_var.megaman_sprites["Megaman_Ladder_1"]]
+
+        self.knockback_sprite = global_var.megaman_sprites["Mega_Pain"]
 
         self.sprite = self.idle_sprites[0]
 
@@ -172,7 +175,11 @@ class Megaman(Collision):
 
     def move_right(self):
         cy = global_var.camera_y
-        if self.keys_pressed[pygame.K_d] and self.x - global_var.camera_x < 720 - 58:
+        if (
+            self.keys_pressed[pygame.K_d]
+            and self.x - global_var.camera_x < 720 - 58
+            and not self.stunned
+        ):
             self.left = True
             if not self.on_stair:
                 self.moving = True
@@ -184,7 +191,11 @@ class Megaman(Collision):
 
     def move_left(self):
         cy = global_var.camera_y
-        if self.keys_pressed[pygame.K_a] and self.x - global_var.camera_x > -10:
+        if (
+            self.keys_pressed[pygame.K_a]
+            and self.x - global_var.camera_x > -10
+            and not self.stunned
+        ):
             self.left = False
             if not self.on_stair:
                 self.moving = True
@@ -196,7 +207,7 @@ class Megaman(Collision):
 
     def move_stair(self):
         cx = global_var.camera_x
-        if self.on_stair:
+        if self.on_stair and not self.stunned:
             if self.jumping:
                 self.y_speed = 0
             if self.keys_pressed[pygame.K_w]:
@@ -271,10 +282,15 @@ class Megaman(Collision):
                 self.sprite = pygame.transform.flip(self.stair_sprite[0], 1, 0)
             self.animation_index += 1
 
+    def stunn_animation(self):
+        self.sprite = pygame.transform.flip(self.knockback_sprite, self.left, 0)
+
     def animations(self):
         if self.animation_index == 39:
             self.animation_index = 0
-        if self.on_stair:
+        if self.stunned:
+            self.stunn_animation()
+        elif self.on_stair:
             self.stair_animation()
         elif self.onground:
             if self.moving:
@@ -283,10 +299,11 @@ class Megaman(Collision):
                 self.idle_animation()
         else:
             self.falling_animation()
-        self.display_to_blit.blit(
-            pygame.transform.scale_by(self.sprite.convert_alpha(), 3),
-            (self.x - global_var.camera_x, self.y - global_var.camera_y),
-        )
+        if not self.knockback_inx % 4:
+            self.display_to_blit.blit(
+                pygame.transform.scale_by(self.sprite.convert_alpha(), 3),
+                (self.x - global_var.camera_x, self.y - global_var.camera_y),
+            )
 
     def respawn(self):
         self.x = self.init_x
@@ -299,6 +316,34 @@ class Megaman(Collision):
         else:
             self.y += 60
 
-    @staticmethod
-    def take_damage(damage):
-        print("Ula")
+    def take_damage(self, damage):
+        if not self.invincible:
+            self.on_stair = False
+            self.hp -= damage
+            self.invincible = True
+            self.stunned = True
+            print(self.hp)
+
+    def knockback(self):
+        cx = global_var.camera_x
+        for i in range(100):
+            if not i % 10:
+                self.knockback_inx += 1
+                if self.stunned:
+                    self.x += 0.05 - 0.1 * self.left
+                    self.x_coll = self.x - cx
+        if self.knockback_inx == 700:
+            self.knockback_inx = 0
+            self.invincible = False
+
+        if self.knockback_inx >= 300:
+            self.stunned = False
+
+    def run(self):
+        if self.invincible:
+            self.knockback()
+        self.move_left()
+        self.move_right()
+        self.move_stair()
+        self.jumping_state()
+        self.animations()

@@ -3,13 +3,12 @@ from random import randint
 
 import global_var
 from collision import Collision
-from megaman import Megaman
 from screen_config import Screen
 from projectile import Projectile
 
 
 class Enemy(Collision):
-    def __init__(self, x, y, width=48, height=48, health=0, damage=0):
+    def __init__(self, x, y, width=48, height=48, health=0, damage=1):
         self.x = x
         self.y = y
         self.width = width
@@ -30,14 +29,10 @@ class Enemy(Collision):
                         enemy.health -= 1
                     shoot[0].delete_shoot(shoots, shoot)
 
-    def check_col(
-        self,
-        enemies,
-        mega_col,
-    ):
+    def check_col(self, enemies, mega_col, mega):
         for i in range(len(enemies) - 1, -1, -1):
             if mega_col.colliderect(enemies[i].collision):
-                Megaman.take_damage(enemies[i].damage)
+                mega.take_damage(enemies[i].damage)
 
     def in_screen(self, enemies):
         cx = global_var.camera_x
@@ -70,6 +65,7 @@ class Blaster(Enemy, Projectile):
             health,
             damage,
         )
+        self.damage = damage
         self.direction = direction
         self.fv = 28 * self.direction  # flip value
 
@@ -161,19 +157,19 @@ class Blaster(Enemy, Projectile):
         proj = Projectile(enemy.direction, enemy.x, enemy.y, kind)
         enemy.project.append(proj)
 
-    def run_proj(self, enemies, obj_bull, mega_col):
+    def run_proj(self, enemies, obj_bull, mega_col, mega):
         for i in range(len(enemies) - 1, -1, -1):
-            obj_bull.run_shoots(enemies[i].project, mega_col)
+            obj_bull.run_shoots(enemies[i].project, mega_col, mega)
 
-    def run(self, enemies, obj_bull, shoots, mega_col):
+    def run(self, enemies, obj_bull, shoots, mega_col, mega):
         for enemy in enemies:
             enemy.can_respawn = False
         self.in_screen(enemies)
         self.check_health(enemies)
         self.take_damage(enemies, shoots)
         self.animation(enemies)
-        self.check_col(enemies, mega_col)
-        self.run_proj(enemies, obj_bull, mega_col)
+        self.run_proj(enemies, obj_bull, mega_col, mega)
+        self.check_col(enemies, mega_col, mega)
 
 
 class Helicopter(Enemy):
@@ -304,13 +300,13 @@ class Helicopter(Enemy):
             ):
                 enemies.remove(enemies[i])
 
-    def run(self, enemies, mega_x, mega_y, mega_col, shoots):
+    def run(self, enemies, mega_x, mega_y, mega_col, shoots, mega):
         self.delete(enemies)
         self.animation(enemies)
         self.take_damage(enemies, shoots)
         self.move(enemies)
         self.attack(enemies, mega_x, mega_y)
-        self.check_col(enemies, mega_col)
+        self.check_col(enemies, mega_col, mega)
 
 
 class Octopus(Enemy):
@@ -425,7 +421,7 @@ class Octopus(Enemy):
             else:
                 enemies[i].can_move = True
 
-    def run(self, enemies, stage_col, shoots, mega_col, dt):
+    def run(self, enemies, stage_col, shoots, mega_col, dt, mega):
         for i in range(len(enemies) - 1, -1, -1):
             enemies[i].can_respawn = False
         self.in_screen(enemies)
@@ -438,4 +434,4 @@ class Octopus(Enemy):
                 self.move(enemies[i])
         if dt == 2:
             self.change_way(enemies)
-        self.check_col(enemies, mega_col)
+        self.check_col(enemies, mega_col, mega)

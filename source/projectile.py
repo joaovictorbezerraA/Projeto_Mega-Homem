@@ -2,7 +2,6 @@ import pygame
 import global_var
 from screen_config import Screen
 from collision import Collision
-from megaman import Megaman
 
 
 class Projectile(Collision):
@@ -65,12 +64,12 @@ class Projectile(Collision):
                 (shoots[i].x - cx, shoots[i].y - cy),
             )
 
-    def check_col(self, enemies, mega_col):
+    def check_col(self, enemies, mega_col, mega):
         for i in range(len(enemies) - 1, -1, -1):
             if mega_col.colliderect(enemies[i].collision):
-                Megaman.take_damage(1)
+                mega.take_damage(1)
 
-    def run_shoots(self, shoots, mega_col):
+    def run_shoots(self, shoots, mega_col, mega):
         self.show(shoots)
         self.move_shoot(shoots)
-        self.check_col(shoots, mega_col)
+        self.check_col(shoots, mega_col, mega)

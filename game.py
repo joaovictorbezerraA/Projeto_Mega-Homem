@@ -48,9 +48,9 @@ while running:
         if event.type == pygame.QUIT:
             running = False
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_SPACE:
+            if not mega.stunned and event.key == pygame.K_SPACE:
                 mega.jump()
-            if event.key == pygame.K_j and global_var.shoots < 3:
+            if not mega.stunned and event.key == pygame.K_j and global_var.shoots < 3:
                 buster_shoot = Shoot(mega.x, mega.y - 15)
                 mega.shoot_direction = mega.left
                 shoots.append((buster_shoot, mega.shoot_direction))
@@ -79,16 +79,12 @@ while running:
 
     segment = stage.selected_sprite
 
-    mega.move_left()
-    mega.move_right()
-    mega.move_stair()
-    mega.jumping_state()
-    mega.animations()
+    mega.run()
     stage.spawn(segment, enemies_bl, "blaster")
     stage.spawn(segment, enemies_oct_b, "octopus")
     buster.run(shoots)
-    blaster.run(enemies_bl, bullets, shoots, col_mega)
-    octopus_bat.run(enemies_oct_b, floor_col, shoots, col_mega, octopus_timer)
+    blaster.run(enemies_bl, bullets, shoots, col_mega, mega)
+    octopus_bat.run(enemies_oct_b, floor_col, shoots, col_mega, octopus_timer, mega)
 
     camera.cam_move(
         segment,
@@ -97,7 +93,7 @@ while running:
         mega.left,
     )
 
-    bundy.run(random_enemies, mega.x, mega.y, col_mega, shoots)
+    bundy.run(random_enemies, mega.x, mega.y, col_mega, shoots, mega)
 
     if mega.y + global_var.camera_y > 1080:
         mega.respawn()
