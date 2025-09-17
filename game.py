@@ -85,6 +85,7 @@ while running:
     buster.run(shoots)
     blaster.run(enemies_bl, bullets, shoots, col_mega, mega)
     octopus_bat.run(enemies_oct_b, floor_col, shoots, col_mega, octopus_timer, mega)
+    mega.display_health()
 
     camera.cam_move(
         segment,

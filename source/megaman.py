@@ -3,6 +3,7 @@ import global_var
 from collision import Collision
 from screen_config import Screen
 from character_attributes import Atributtes
+from life_bar import Life_bar
 
 pygame.init()
 
@@ -14,7 +15,7 @@ pixel_offset_y = 3
 pygame.init()
 
 
-class Megaman(Atributtes, Collision):
+class Megaman(Atributtes, Life_bar, Collision):
     def __init__(self, x, y, hp=24, width=14 * 3, height=23 * 3):
         super().__init__(hp)
         self.gravitty = 1
@@ -322,7 +323,6 @@ class Megaman(Atributtes, Collision):
             self.hp -= damage
             self.invincible = True
             self.stunned = True
-            print(self.hp)
 
     def knockback(self):
         cx = global_var.camera_x
