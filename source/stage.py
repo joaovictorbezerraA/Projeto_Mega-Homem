@@ -4,7 +4,6 @@ import enemy_spawns
 from screen_config import Screen
 from global_var import stage_sprites
 from stage_coll import Stage_collisions
-from enemy_spawns import spawn_enemies
 
 
 class Stage(Stage_collisions):
@@ -114,5 +113,10 @@ class Stage(Stage_collisions):
             )
             self.selected_seg = "Cutman_Stage_Segment_1"
 
-    def spawn(self, segment, enemies):
-        spawn_enemies(segment, enemies)
+    def spawn(self, segment, enemies, name):
+        if segment == "Cutman_Stage_Segment_1" or segment == "Cutman_Stage_Segment_2":
+            if name == "blaster":
+                enemy_spawns.spawn_blasters(segment, enemies)
+        if segment == "Cutman_Stage_Segment_3" or segment == "Cutman_Stage_Segment_4":
+            if name == "octopus":
+                enemy_spawns.spawn_octopus(segment, enemies)

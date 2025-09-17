@@ -30,10 +30,32 @@ class Enemy(Collision):
                         enemy.health -= 1
                     shoot[0].delete_shoot(shoots, shoot)
 
-    def check_col(self, enemies, mega_col):
+    def check_col(
+        self,
+        enemies,
+        mega_col,
+    ):
         for i in range(len(enemies) - 1, -1, -1):
             if mega_col.colliderect(enemies[i].collision):
-                Megaman.take_damage(1)
+                Megaman.take_damage(enemies[i].damage)
+
+    def in_screen(self, enemies):
+        cx = global_var.camera_x
+        cy = global_var.camera_y
+        for i in range(len(enemies) - 1, -1, -1):
+            if (enemies[i].x - cx < -80 or enemies[i].x - cx > 760) or (
+                enemies[i].y - cy < 0 or enemies[i].y - cy > 720
+            ):
+                enemies[i].can_respawn = True
+                if enemies[i].health == 0:
+                    enemies[i].health = 1
+                enemies.remove(enemies[i])
+
+    def check_health(self, enemies):
+        for i in range(len(enemies) - 1, -1, -1):
+            if enemies[i].health == 0:
+                enemies[i].can_respawn = True
+                enemies.remove(enemies[i])
 
 
 class Blaster(Enemy, Projectile):
@@ -135,24 +157,6 @@ class Blaster(Enemy, Projectile):
                 (enemies[i].x - cx, enemies[i].y - cy),
             )
 
-    def check_health(self, enemies):
-        for i in range(len(enemies) - 1, -1, -1):
-            if enemies[i].health == 0:
-                enemies[i].can_respawn = True
-                enemies.remove(enemies[i])
-
-    def in_screen(self, enemies):
-        cx = global_var.camera_x
-        cy = global_var.camera_y
-        for i in range(len(enemies) - 1, -1, -1):
-            if (enemies[i].x - cx < -80 or enemies[i].x - cx > 760) or (
-                enemies[i].y - cy < 0 or enemies[i].y - cy > 720
-            ):
-                enemies[i].can_respawn = True
-                if enemies[i].health == 0:
-                    enemies[i].health = 1
-                enemies.remove(enemies[i])
-
     def attack(self, enemy, kind):
         proj = Projectile(enemy.direction, enemy.x, enemy.y, kind)
         enemy.project.append(proj)
@@ -216,7 +220,6 @@ class Helicopter(Enemy):
                 bundy[i].used_sprite = pygame.transform.scale_by(
                     bundy[i].used_sprite, 3
                 )
-            pygame.draw.rect(self.screen_to_blit, "blue", bundy[i].collision)
             bundy[i].screen_to_blit.blit(
                 bundy[i].used_sprite, (bundy[i].x - cx, bundy[i].y - cy)
             )
@@ -243,7 +246,7 @@ class Helicopter(Enemy):
         for i in range(len(enemies)):
             if (
                 mega_x - 100 < enemies[i].x < mega_x + 100
-                and mega_y - 180 < enemies[i].y < mega_y + 180
+                and mega_y - 210 < enemies[i].y < mega_y + 210
             ):
                 if not enemies[i].attacking:
                     enemies[i].attacking = True
@@ -284,7 +287,7 @@ class Helicopter(Enemy):
             segment == "Cutman_Stage_Segment_1"
             or segment == "Cutman_Stage_Segment_3"
             or segment == "Cutman_Stage_Segment_5"
-        ) and len(rand_enemies) < 8:
+        ) and len(rand_enemies) < 5:
             rand_enemies.append(Helicopter(720 + spawn_x, randint(100, 600) + spawn_y))
         return rand_enemies
 
@@ -307,4 +310,132 @@ class Helicopter(Enemy):
         self.take_damage(enemies, shoots)
         self.move(enemies)
         self.attack(enemies, mega_x, mega_y)
+        self.check_col(enemies, mega_col)
+
+
+class Octopus(Enemy):
+    def __init__(
+        self, x=0, y=0, direction=False, way=False, width=16 * 3, health=3, damage=3
+    ):
+        super().__init__(x, y, width, health, damage)
+        self.direction = direction
+        self.way = way
+        self.speed = 0
+
+        self.x_coll = self.x
+        self.y_coll = self.y
+
+        self.sprites = [
+            global_var.octopus_sprites["Octopus_Sleep"],
+            global_var.octopus_sprites["Octopus_Move"],
+        ]
+
+        self.active_sprite = pygame.transform.scale_by(
+            self.sprites[0].convert_alpha(), 3
+        )
+
+        self.height = self.width
+        self.collision = self.coll()
+        self.moving = False
+        self.can_move = False
+
+        self.attacking = True
+        self.teste = True
+
+    def animation(self, enemies):
+        cx = global_var.camera_x
+        cy = global_var.camera_y
+        for i in range(len(enemies) - 1, -1, -1):
+            enemies[i].collision = enemies[i].coll()
+            if enemies[i].can_move:
+                enemies[i].active_sprite = pygame.transform.scale_by(
+                    enemies[i].sprites[1].convert_alpha(), 3
+                )
+            else:
+                enemies[i].active_sprite = pygame.transform.scale_by(
+                    enemies[i].sprites[0].convert_alpha(), 3
+                )
+            enemies[i].screen_to_blit.blit(
+                enemies[i].active_sprite, (enemies[i].x - cx, enemies[i].y - cy)
+            )
+
+    def move(self, octopus):
+        for i in range(100):
+            if i % 10 == 0:
+                if octopus.direction:
+                    if octopus.way:
+                        octopus.speed = -0.8
+                    else:
+                        octopus.speed = 0.8
+                    octopus.y += octopus.speed
+                    octopus.y_coll = octopus.y
+                else:
+                    if octopus.way:
+                        octopus.speed = 0.8
+                    else:
+                        octopus.speed = -0.8
+                    octopus.x += octopus.speed
+                    octopus.x_coll = octopus.x
+
+    def stop(self, enemies, stage_col):
+        cx = global_var.camera_x
+        cy = global_var.camera_y
+        for i in range(len(enemies) - 1, -1, -1):
+            for collision in stage_col:
+                if enemies[i].collision.colliderect(collision):
+                    if not enemies[i].direction:
+                        if (
+                            enemies[i].collision.left < collision.right
+                            and enemies[i].collision.right > collision.right
+                        ):
+                            enemies[i].collision.left = collision.right
+                            enemies[i].x = enemies[i].collision.left + cx
+                            enemies[i].x_coll = enemies[i].x
+                        else:
+                            enemies[i].collision.right = collision.left
+                            enemies[i].x = enemies[i].collision.left + cx
+                            enemies[i].x_coll = enemies[i].x
+                        if enemies[i].way:
+                            enemies[i].way = False
+                        else:
+                            enemies[i].way = True
+                        enemies[i].can_move = False
+                    else:
+                        if (
+                            enemies[i].collision.top < collision.top
+                            and enemies[i].collision.bottom < collision.bottom
+                        ):
+                            enemies[i].collision.bottom = collision.top
+                            enemies[i].y = enemies[i].collision.top + cy
+                            enemies[i].y_coll = enemies[i].y
+                        else:
+                            enemies[i].collision.top = collision.bottom
+                            enemies[i].y = enemies[i].collision.top + cy
+                            enemies[i].y_coll = enemies[i].y
+                        if enemies[i].way:
+                            enemies[i].way = False
+                        else:
+                            enemies[i].way = True
+                        enemies[i].can_move = False
+
+    def change_way(self, enemies):
+        for i in range(len(enemies) - 1, -1, -1):
+            if enemies[i].can_move:
+                enemies[i].can_move = False
+            else:
+                enemies[i].can_move = True
+
+    def run(self, enemies, stage_col, shoots, mega_col, dt):
+        for i in range(len(enemies) - 1, -1, -1):
+            enemies[i].can_respawn = False
+        self.in_screen(enemies)
+        self.check_health(enemies)
+        self.take_damage(enemies, shoots)
+        self.animation(enemies)
+        self.stop(enemies, stage_col)
+        for i in range(len(enemies) - 1, -1, -1):
+            if enemies[i].can_move:
+                self.move(enemies[i])
+        if dt == 2:
+            self.change_way(enemies)
         self.check_col(enemies, mega_col)

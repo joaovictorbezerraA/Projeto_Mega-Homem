@@ -6,7 +6,7 @@ sys.path.insert(1, "source")
 from megaman import Megaman
 from screen_config import Screen
 from shoot import Shoot
-from enemy import Helicopter, Blaster
+from enemy import Helicopter, Blaster, Octopus
 from stage import Stage
 from projectile import Projectile
 import camera
@@ -18,6 +18,7 @@ screen = Screen()
 clock = pygame.time.Clock()
 event_timer = pygame.time.Clock()
 timer = 5
+octopus_timer = 2
 
 running = True
 soma = 0
@@ -31,11 +32,13 @@ col_mega = mega.coll()
 stage = Stage()
 bundy = Helicopter(0, 0)
 blaster = Blaster(600, 600)
+octopus_bat = Octopus(16 * 3 * 14, 21 * 3 * 5, True, False)
 bullets = Projectile(1, 0, 0, 0)
 
 shoots = []
 random_enemies = []
 enemies_bl = []
+enemies_oct_b = []
 while running:
     screen.display_screen.fill("#00e8d8")
     stage.change_segment((mega.x, mega.y))
@@ -81,9 +84,11 @@ while running:
     mega.move_stair()
     mega.jumping_state()
     mega.animations()
-    stage.spawn(segment, enemies_bl)
+    stage.spawn(segment, enemies_bl, "blaster")
+    stage.spawn(segment, enemies_oct_b, "octopus")
     buster.run(shoots)
     blaster.run(enemies_bl, bullets, shoots, col_mega)
+    octopus_bat.run(enemies_oct_b, floor_col, shoots, col_mega, octopus_timer)
 
     camera.cam_move(
         segment,
@@ -101,6 +106,9 @@ while running:
 
     dt = clock.tick(60) / 1000
     timer -= dt
+    octopus_timer -= dt
+    if octopus_timer <= 0:
+        octopus_timer = 2
 
     if not global_var.disable_bunby_spawn:
         if timer <= 0:

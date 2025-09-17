@@ -52,7 +52,7 @@ def cam_move(
     elif segment == "Cutman_Stage_Segment_6":
         cam_vertical_move(pos_relativa_y)
     elif segment == "Cutman_Stage_Segment_7":
-        if right and pos_relativa_x > meio and pos[0] <= 6552:
+        if right and pos_relativa_x > meio and pos[0] <= 6550:
             global_var.camera_x += speed_x
         if not right and pos_relativa_x < meio and pos[0] >= 5736:
             global_var.camera_x -= speed_x

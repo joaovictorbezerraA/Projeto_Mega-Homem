@@ -10,6 +10,8 @@ helicopter_sprites = image_loader(
 
 blaster_sprites = image_loader("./sprites/Enemy_Sprites/Blaster_Sprites")
 
+octopus_sprites = image_loader("./sprites/Enemy_Sprites/Octopus_Sprites")
+
 stage_sprites = image_loader("./sprites/Stage")
 
 pj_sprites = image_loader("./sprites/Enemy_Sprites/Projectiles_Sprites")
