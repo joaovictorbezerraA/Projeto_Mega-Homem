@@ -9,6 +9,7 @@ from shoot import Shoot
 from enemy import Helicopter, Blaster, Octopus
 from stage import Stage
 from projectile import Projectile
+from door import Door
 import camera
 import global_var
 
@@ -25,7 +26,7 @@ soma = 0
 
 mega = Megaman(
     45,
-    528,
+    400,
 )
 buster = Shoot(mega.x_coll + 30, mega.y_coll)
 col_mega = mega.coll()
@@ -86,6 +87,9 @@ while running:
     blaster.run(enemies_bl, bullets, shoots, col_mega, mega)
     octopus_bat.run(enemies_oct_b, floor_col, shoots, col_mega, octopus_timer, mega)
     mega.display_health()
+    doors = stage.list_doors(segment)
+    for door in doors:
+        door.run(col_mega)
 
     camera.cam_move(
         segment,

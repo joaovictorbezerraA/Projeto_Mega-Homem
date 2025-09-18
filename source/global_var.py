@@ -21,8 +21,9 @@ wall_debug = False
 
 camera_x = 0
 camera_y = 0
-screen_ch = 0
 
 shoots = 0
 
 disable_bunby_spawn = False
+
+opening = False

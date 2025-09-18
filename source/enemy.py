@@ -173,7 +173,7 @@ class Blaster(Enemy, Projectile):
 
 
 class Helicopter(Enemy):
-    def __init__(self, x=600, y=0, width=13 * 3, height=15 * 3, health=3, damage=1):
+    def __init__(self, x=600, y=0, width=13 * 3, height=15 * 3, health=3, damage=3):
         super().__init__(
             x,
             y,

@@ -43,6 +43,7 @@ class Megaman(Atributtes, Life_bar, Collision):
         self.jumping = False
 
         self.on_stair = False
+        self.stopped = False
 
         self.walk_sprites = [
             global_var.megaman_sprites["Megaman_Walk_1"],
@@ -63,7 +64,7 @@ class Megaman(Atributtes, Life_bar, Collision):
         self.display_to_blit = Screen.display_screen
 
     def falling(self):
-        if not self.on_stair:
+        if not self.on_stair and not self.stopped:
             self.y_speed = self.gravitty * self.falling_counter
             if self.y_speed > 22:
                 self.y_speed = 22
@@ -77,7 +78,7 @@ class Megaman(Atributtes, Life_bar, Collision):
         colliding = False
         for coll in collision:
             if mega_colision.colliderect(coll):
-                if not self.on_stair and not global_var.screen_ch:
+                if not self.on_stair:
                     if (
                         mega_colision.left <= coll.right + self.speed + 10
                         and mega_colision.right > coll.right + self.speed
@@ -140,14 +141,18 @@ class Megaman(Atributtes, Life_bar, Collision):
                 ):
                     self.on_stair = False
                 for event in events:
-                    if event.type == pygame.KEYDOWN and (
-                        (
-                            event.key == pygame.K_w
-                            and mega_colision.bottom > coll.top + 1
-                        )
-                        or (
-                            event.key == pygame.K_s
-                            and mega_colision.bottom < coll.bottom + 1
+                    if (
+                        event.type == pygame.KEYDOWN
+                        and not self.stunned
+                        and (
+                            (
+                                event.key == pygame.K_w
+                                and mega_colision.bottom > coll.top
+                            )
+                            or (
+                                event.key == pygame.K_s
+                                and mega_colision.bottom < coll.bottom
+                            )
                         )
                     ):
                         if (
@@ -222,7 +227,7 @@ class Megaman(Atributtes, Life_bar, Collision):
             self.x_coll = self.x - cx + 1
 
     def jump(self):
-        if self.onground or self.on_stair:
+        if self.onground and not global_var.opening:
             self.jumping = True
             for i in range(20):
                 if i % 10 == 0 and not (self.on_ceiling or self.on_stair):
@@ -242,10 +247,9 @@ class Megaman(Atributtes, Life_bar, Collision):
             self.y_coll -= cy
 
     def vertical_move(self, offset=0):
-        self.y += self.y_speed
-        self.y_coll = self.y + offset - global_var.camera_y
-        if global_var.screen_ch:
-            self.handle_transition()
+        if not self.stopped:
+            self.y += self.y_speed
+            self.y_coll = self.y + offset - global_var.camera_y
 
     def walk_animation(self):
         if (
@@ -287,19 +291,20 @@ class Megaman(Atributtes, Life_bar, Collision):
         self.sprite = pygame.transform.flip(self.knockback_sprite, self.left, 0)
 
     def animations(self):
-        if self.animation_index == 39:
-            self.animation_index = 0
-        if self.stunned:
-            self.stunn_animation()
-        elif self.on_stair:
-            self.stair_animation()
-        elif self.onground:
-            if self.moving:
-                self.walk_animation()
+        if not self.stopped:
+            if self.animation_index == 39:
+                self.animation_index = 0
+            if self.stunned:
+                self.stunn_animation()
+            elif self.on_stair:
+                self.stair_animation()
+            elif self.onground:
+                if self.moving:
+                    self.walk_animation()
+                else:
+                    self.idle_animation()
             else:
-                self.idle_animation()
-        else:
-            self.falling_animation()
+                self.falling_animation()
         if not self.knockback_inx % 4:
             self.display_to_blit.blit(
                 pygame.transform.scale_by(self.sprite.convert_alpha(), 3),
@@ -310,12 +315,8 @@ class Megaman(Atributtes, Life_bar, Collision):
         self.x = self.init_x
         self.y = self.init_y
         global_var.camera_x = 0
-
-    def handle_transition(self):
-        if self.y_speed <= 0:
-            self.y -= 60
-        else:
-            self.y += 60
+        global_var.camera_y = 0
+        self.hp = 28
 
     def take_damage(self, damage):
         if not self.invincible:
@@ -323,6 +324,7 @@ class Megaman(Atributtes, Life_bar, Collision):
             self.hp -= damage
             self.invincible = True
             self.stunned = True
+            self.left = True
 
     def knockback(self):
         cx = global_var.camera_x
@@ -340,10 +342,14 @@ class Megaman(Atributtes, Life_bar, Collision):
             self.stunned = False
 
     def run(self):
+        if self.hp <= 0:
+            self.respawn()
+        self.stopped = global_var.opening
         if self.invincible:
             self.knockback()
-        self.move_left()
-        self.move_right()
-        self.move_stair()
-        self.jumping_state()
+        if not self.stopped:
+            self.move_left()
+            self.move_right()
+            self.move_stair()
+            self.jumping_state()
         self.animations()

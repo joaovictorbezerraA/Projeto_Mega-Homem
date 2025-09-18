@@ -1,4 +1,5 @@
 import pygame
+from door import Door
 
 bw = 3 * 16
 bh = 3 * 16
@@ -407,3 +408,6 @@ collisions = {
     "Cutman_Stage_Segment_6": [og_floor_col_6, og_stair_col_6],
     "Cutman_Stage_Segment_7": [og_floor_col_7, og_stair_col_7],
 }
+
+d1 = Door(141 * bw, -74 * bh, 1)
+doors = [d1]

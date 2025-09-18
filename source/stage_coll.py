@@ -1,9 +1,7 @@
-import pygame
-import camera
 import global_var
 import copy
 import list_coll
-from list_coll import collisions
+from list_coll import collisions, doors
 
 bw = 3 * 16
 bh = 3 * 16
@@ -39,3 +37,9 @@ class Stage_collisions:
         for i in range(len(self.stairs_collisions)):
             self.stairs_collisions[i][0] = self.og_s_coll[i][0] - cx
             self.stairs_collisions[i][1] = self.og_s_coll[i][1] - cy
+
+    def list_doors(self, segment):
+        if segment == "Cutman_Stage_Segment_7":
+            return doors
+        else:
+            return []
