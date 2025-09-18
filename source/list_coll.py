@@ -3,8 +3,6 @@ from door import Door
 
 bw = 3 * 16
 bh = 3 * 16
-of = 5
-th = 3  # wall__collision_thickness
 
 selected_seg = "Cutman_Stage_Segment_1"
 
@@ -36,15 +34,14 @@ st0 = pygame.Rect(5 * bw, 6 * bh - 1, bw, 6 * bh)
 st1 = pygame.Rect(10 * bw, 6 * bh - 1, bw, 2 * bh)
 st2 = pygame.Rect(21 * bw, 6 * bh - 1, bw, 6 * bh)
 st3 = pygame.Rect(53 * bw, 4 * bh - 1, bw, 6 * bh)
-st4 = pygame.Rect(61 * bw, -3 * bh, bw, 7 * bh)
+st4 = pygame.Rect(61 * bw, -3 * bh - 1, bw, 7 * bh)
 
-w0 = pygame.Rect(10 * bw, 8 * bh, 2 * bw + 5, 4 * bh)
-w1 = pygame.Rect(0, 6 * bh, 12 * bw + 10, bh)
-w2 = pygame.Rect(54 * bw, 5 * bh, bw, bh)
-w3 = pygame.Rect(60 * bw, 6 * bh, bw, 4 * bh)
-w4 = pygame.Rect(60 * bw, 0, bw, 2 * bh)
-w5 = pygame.Rect(62 * bw, 0, bw, 4 * bh)
-w6 = pygame.Rect(36 * bw, 10 * bh, 2 * bw, 2 * bh)
+w0 = pygame.Rect(10 * bw, 8 * bh, 2 * bw, 4 * bh)
+w1 = pygame.Rect(54 * bw, 5 * bh, bw, bh)
+w2 = pygame.Rect(60 * bw, 6 * bh, bw, 4 * bh)
+w3 = pygame.Rect(60 * bw, 0, bw, 2 * bh)
+w4 = pygame.Rect(62 * bw, 0, bw, 4 * bh)
+w5 = pygame.Rect(36 * bw, 10 * bh, 2 * bw, 2 * bh)
 
 og_floor_col = [
     b0,
@@ -74,7 +71,6 @@ og_floor_col = [
     w3,
     w4,
     w5,
-    w6,
 ]
 
 og_stair_col = [
@@ -101,17 +97,17 @@ f2_12 = pygame.Rect(50 * bw, -19 * bh, 3 * bw, 3 * bh)
 f2_13 = pygame.Rect(50 * bw, -21 * bh, 2 * bw, 2 * bh)
 f2_14 = pygame.Rect(50 * bw, -27 * bh, 2 * bw, bh)
 f2_15 = pygame.Rect(51 * bw, -26 * bh, bw, bh)
-f2_16 = pygame.Rect(56 * bw, -25 * bh, bw, 2 * bh)
-f2_17 = pygame.Rect(57 * bw, -25 * bh, bw, bh)
+f2_16 = pygame.Rect(56 * bw, -25 * bh, 2 * bw, bh)
+f2_17 = pygame.Rect(56 * bw, -24 * bh, bw, bh)
 f2_18 = pygame.Rect(58 * bw, -27 * bh, 2 * bw, 4 * bh)
 f2_19 = pygame.Rect(60 * bw, -29 * bh, 2 * bw, 6 * bh)
-f2_20 = pygame.Rect(57 * bw, -35 * bh, 4 * bw, 3 * bh)
-f2_21 = pygame.Rect(61 * bw, -35 * bh, bw, bh)
+f2_20 = pygame.Rect(57 * bw, -34 * bh, 4 * bw, 2 * bh)
+f2_21 = pygame.Rect(57 * bw, -35 * bh, 5 * bw, bh)
 f2_22 = pygame.Rect(51 * bw, -35 * bh, 4 * bw, 3 * bh)
 f2_23 = pygame.Rect(51 * bw, -40 * bh, 9 * bw, bh)
 f2_24 = pygame.Rect(51 * bw, -43 * bh, 5 * bw, bh)
-f2_25 = pygame.Rect(51 * bw, -51 * bh, bw, bh)
-f2_26 = pygame.Rect(52 * bw, -51 * bh, 8 * bw, 3 * bh)
+f2_25 = pygame.Rect(51 * bw, -51 * bh, 3 * bw, bh)
+f2_26 = pygame.Rect(53 * bw, -51 * bh, 8 * bw, 3 * bh)
 
 
 w2_1 = pygame.Rect(60 * bw, 6 * bh, bw, 4 * bh)
@@ -198,11 +194,11 @@ f3_7 = pygame.Rect(78 * bw, -53 * bh, 2 * bw, bh)
 f3_8 = pygame.Rect(80 * bw, -52 * bh, 11 * bw, bh)
 f3_9 = pygame.Rect(91 * bw, -54 * bh, bw, 2 * bh)
 f3_10 = pygame.Rect(86 * bw, -55 * bh, 3 * bw, bh)
-f3_11 = pygame.Rect(85 * bw, -60 * bh, bw, bh)
-f3_12 = pygame.Rect(86 * bw, -60 * bh, bw, 2 * bh)
+f3_11 = pygame.Rect(84 * bw, -60 * bh, 3 * bw, bh)
+f3_12 = pygame.Rect(86 * bw, -59 * bh, bw, bh)
 f3_13 = pygame.Rect(89 * bw, -60 * bh, 5 * bw, 2 * bh)
 
-w3_0 = pygame.Rect(84 * bw, -60 * bh, bw, 6 * bh)
+w3_0 = pygame.Rect(84 * bw, -59 * bh, bw, 5 * bh)
 w3_1 = pygame.Rect(92 * bw, -58 * bh, bw, 4 * bh)
 w3_2 = pygame.Rect(92 * bw, -64 * bh, bw, 2 * bh)
 
@@ -266,6 +262,10 @@ st4_4 = pygame.Rect(84 * bw, -106 * bh - 1, bw, 4 * bh)
 st4_5 = pygame.Rect(83 * bw, -115 * bh - 1, bw, 7 * bh)
 
 og_floor_col_4 = [
+    f3_8,
+    f3_10,
+    f3_12,
+    w3_1,
     f4_0,
     f4_1,
     f4_2,
@@ -286,6 +286,7 @@ og_floor_col_4 = [
     f4_17,
     f4_18,
     f4_19,
+    w3_0,
     w4_0,
     w4_1,
     w4_2,
@@ -324,11 +325,13 @@ og_floor_col_5 = [
 
 og_stair_col_5 = [st5_0]
 
-f6_0 = pygame.Rect(119 * bw, -109 * bh, 7 * bw, 2 * bh)
+f6_0 = pygame.Rect(120 * bw, -109 * bh, 6 * bw, bh)
+f6_0_2 = pygame.Rect(119 * bw, -108 * bh, 7 * bw, bh)
 f6_1 = pygame.Rect(118 * bw, -103 * bh, 2 * bw, bh)
 f6_2 = pygame.Rect(122 * bw, -103 * bh, 2 * bw, bh)
-f6_3 = pygame.Rect(118 * bw, -109 * bh, bw, bh)
-f6_4 = pygame.Rect(116 * bw, -109 * bh, 2 * bw, 2 * bh)
+f6_3 = pygame.Rect(117 * bw, -109 * bh, 3 * bw, bh)
+f6_4 = pygame.Rect(116 * bw, -109 * bh, bw, 2 * bh)
+f6_4_2 = pygame.Rect(117 * bw, -108 * bh, bw, bh)
 f6_5 = pygame.Rect(114 * bw, -99 * bh, 6 * bw, bh)
 f6_6 = pygame.Rect(116 * bw, -92 * bh, 4 * bw, 2 * bh)
 f6_7 = pygame.Rect(125 * bw, -92 * bh, 2 * bw, bh)
@@ -352,10 +355,12 @@ st6_3 = pygame.Rect(114 * bw, -83 * bh - 1, bw, 7 * bh + 1)
 
 og_floor_col_6 = [
     f6_0,
+    f6_0_2,
     f6_1,
     f6_2,
     f6_3,
     f6_4,
+    f6_4_2,
     f6_5,
     f6_6,
     f6_7,
@@ -382,7 +387,7 @@ og_stair_col_6 = [
 f7_0 = pygame.Rect(114 * bw, -72 * bh, 4 * bw, 2 * bh)
 f7_1 = pygame.Rect(118 * bw, -70 * bh, 2 * bw, 2 * bh)
 f7_2 = pygame.Rect(120 * bw, -68 * bh, 18 * bw, bh)
-f7_3 = pygame.Rect(138 * bw, -70 * bh, 6 * bw, 2 * bh)
+f7_3 = pygame.Rect(138 * bw, -70 * bh, 8 * bw, 2 * bh)
 
 w7_0 = w6_3
 
@@ -399,6 +404,20 @@ og_floor_col_7 = [
 og_stair_col_7 = [
     st7_0,
 ]
+
+f8_0 = pygame.Rect(138 * bw, -70 * bh, 60 * bw, bh)
+f8_1 = pygame.Rect(138 * bw, -75 * bh, 55 * bw, bh)
+f8_2 = pygame.Rect(197 * bw, -69 * bh, bw, bh)
+f8_3 = pygame.Rect(198 * bw, -68 * bh, 9 * bw, bh)
+
+w8_0 = pygame.Rect(207 * bw, -78 * bh, bw, 10 * bh)
+og_floor_col_8 = [
+    f8_0,
+    f8_1,
+    f8_2,
+    f8_3,
+    w8_0,
+]
 collisions = {
     "Cutman_Stage_Segment_1": [og_floor_col, og_stair_col],
     "Cutman_Stage_Segment_2": [og_floor_col_2, og_stair_col_2],
@@ -407,7 +426,9 @@ collisions = {
     "Cutman_Stage_Segment_5": [og_floor_col_5, og_stair_col_5],
     "Cutman_Stage_Segment_6": [og_floor_col_6, og_stair_col_6],
     "Cutman_Stage_Segment_7": [og_floor_col_7, og_stair_col_7],
+    "Cutman_Stage_Segment_8": [og_floor_col_8, []],
 }
 
-d1 = Door(141 * bw, -74 * bh, 1)
-doors = [d1]
+d0 = Door(141 * bw, -74 * bh, 1)
+d1 = Door(190 * bw, -74 * bh, 0)
+doors = [d0, d1]

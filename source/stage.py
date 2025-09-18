@@ -18,6 +18,7 @@ class Stage(Stage_collisions):
             stage_sprites["Cutman_Stage_Segment_5"],
             stage_sprites["Cutman_Stage_Segment_6"],
             stage_sprites["Cutman_Stage_Segment_7"],
+            stage_sprites["Cutman_Stage_Segment_8"],
         ]
 
         self.sprite_pos = {
@@ -28,6 +29,7 @@ class Stage(Stage_collisions):
             "Cutman_Stage_Segment_5": [1280 * 3, -3072 * 2],
             "Cutman_Stage_Segment_6": [1280 * 4 + 256, -3072 * 2],
             "Cutman_Stage_Segment_7": [1280 * 4 + 256, -3072 * 2 + 768 * 3],
+            "Cutman_Stage_Segment_8": [1280 * 4 + 256 * 4 - 3, -3072 * 2 + 768 * 3],
         }
 
         self.selected_sprite = "Cutman_Stage_Segment_1"
@@ -68,8 +70,15 @@ class Stage(Stage_collisions):
         on_seg_5 = coordinates[0] >= 4120 and coordinates[1] <= -5560
         on_seg_6 = coordinates[0] >= 5412 and coordinates[1] > -5560
         on_seg_7 = coordinates[0] >= 5412 and coordinates[1] > -3822
+        on_seg_8 = coordinates[0] >= 6800
 
-        if on_seg_7:
+        if on_seg_8:
+            self.selected_sprite = "Cutman_Stage_Segment_8"
+            self.used_sprite = pygame.transform.scale_by(
+                self.sprites[7].convert_alpha(), 3
+            )
+            self.selected_seg = "Cutman_Stage_Segment_8"
+        elif on_seg_7:
             self.selected_sprite = "Cutman_Stage_Segment_7"
             self.used_sprite = pygame.transform.scale_by(
                 self.sprites[6].convert_alpha(), 3

@@ -3,11 +3,6 @@ import copy
 import list_coll
 from list_coll import collisions, doors
 
-bw = 3 * 16
-bh = 3 * 16
-of = 5
-th = 10  # wall__collision_thickness
-
 
 class Stage_collisions:
     def __init__(self):
@@ -39,7 +34,7 @@ class Stage_collisions:
             self.stairs_collisions[i][1] = self.og_s_coll[i][1] - cy
 
     def list_doors(self, segment):
-        if segment == "Cutman_Stage_Segment_7":
+        if segment >= "Cutman_Stage_Segment_7":
             return doors
         else:
             return []

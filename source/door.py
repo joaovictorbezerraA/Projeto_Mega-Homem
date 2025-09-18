@@ -27,17 +27,21 @@ class Door(Collision, Screen):
         if not self.already_open and self.collision.colliderect(megaman):
             self.opening = True
             global_var.opening = True
+            if self.kind:
+                global_var.first_door_open = True
+            else:
+                global_var.second_door_open = True
 
     def draw_door(self):
         cx = global_var.camera_x
         cy = global_var.camera_y
-        if self.kind == 0:
+        if not self.kind:
             for i in range(16 - self.open_inx):
                 self.screen.blit(
                     pygame.transform.scale_by(self.sprite.convert_alpha(), 3),
                     (self.x - cx, self.y + 12 * i - cy),
                 )
-        elif self.kind == 1:
+        elif self.kind:
             for i in range(2):
                 for j in range(16 - self.open_inx):
                     self.screen.blit(

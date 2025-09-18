@@ -27,3 +27,5 @@ shoots = 0
 disable_bunby_spawn = False
 
 opening = False
+first_door_open = False
+second_door_open = False

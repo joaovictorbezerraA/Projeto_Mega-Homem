@@ -11,6 +11,7 @@ clock = pygame.time.Clock()
 
 pixel_offset = 10
 pixel_offset_y = 3
+col_right_offset = 34
 
 pygame.init()
 
@@ -80,29 +81,18 @@ class Megaman(Atributtes, Life_bar, Collision):
             if mega_colision.colliderect(coll):
                 if not self.on_stair:
                     if (
-                        mega_colision.left <= coll.right + self.speed + 10
-                        and mega_colision.right > coll.right + self.speed
-                        and mega_colision.bottom > coll.top + self.y_speed + 1
-                        and mega_colision.top < coll.bottom - 1 - self.y_speed
+                        not self.left
+                        and mega_colision.right >= coll.right + col_right_offset
                     ):
                         mega_colision.left = coll.right + 1
-                        self.x = mega_colision.left - 13 + cx
-                    elif (
-                        mega_colision.right <= coll.left + self.speed + 10
-                        and mega_colision.left < coll.left + self.speed
-                        and mega_colision.bottom > coll.top + self.y_speed + 1
-                        and mega_colision.top < coll.bottom - 1 - self.y_speed
-                    ):
+                        self.x = mega_colision.left - 12 + cx
+                    elif mega_colision.right <= coll.left + self.speed + 1:
                         mega_colision.right = coll.left - 1
                         self.x = mega_colision.left - 13 + cx
 
                     elif (
                         mega_colision.bottom > coll.top - self.y_speed
                         and mega_colision.top < coll.top
-                        and (
-                            mega_colision.left >= coll.left
-                            or mega_colision.right <= coll.right
-                        )
                     ):
                         self.onground = True
                         self.y_speed = 0
@@ -113,10 +103,6 @@ class Megaman(Atributtes, Life_bar, Collision):
                     elif (
                         mega_colision.top < coll.bottom + self.y_speed
                         and mega_colision.bottom > coll.bottom
-                        and (
-                            mega_colision.left >= coll.left
-                            or mega_colision.right <= coll.right
-                        )
                     ):
                         self.jumping = False
                         mega_colision.top = coll.bottom
@@ -147,11 +133,11 @@ class Megaman(Atributtes, Life_bar, Collision):
                         and (
                             (
                                 event.key == pygame.K_w
-                                and mega_colision.bottom > coll.top
+                                and mega_colision.bottom > coll.top + 1
                             )
                             or (
                                 event.key == pygame.K_s
-                                and mega_colision.bottom < coll.bottom
+                                and mega_colision.bottom < coll.bottom + 10
                             )
                         )
                     ):
@@ -214,16 +200,16 @@ class Megaman(Atributtes, Life_bar, Collision):
     def move_stair(self):
         cx = global_var.camera_x
         if self.on_stair and not self.stunned:
-            if self.jumping:
-                self.y_speed = 0
             if self.keys_pressed[pygame.K_w]:
                 self.y_speed = -4
                 self.moving = True
                 self.vertical_move()
-            if self.keys_pressed[pygame.K_s]:
+            elif self.keys_pressed[pygame.K_s]:
                 self.y_speed = 4
                 self.moving = True
                 self.vertical_move()
+            else:
+                self.moving = False
             self.x_coll = self.x - cx + 1
 
     def jump(self):

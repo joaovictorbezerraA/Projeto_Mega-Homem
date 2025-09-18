@@ -37,7 +37,6 @@ class Shoot(Collision):
                         shoots[i][0].shoot_y - global_var.camera_y,
                     ),
                 )
-                pygame.draw.rect(self.screen, "gold", shoots[i][0].collision)
 
     def move_shoot(self, shoots):
         cx = global_var.camera_x
