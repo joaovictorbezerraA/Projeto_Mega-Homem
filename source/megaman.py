@@ -19,6 +19,9 @@ pygame.init()
 class Megaman(Atributtes, Life_bar, Collision):
     def __init__(self, x, y, hp=24, width=14 * 3, height=23 * 3):
         super().__init__(hp)
+        self.shooting_offset = 0
+        self.y_offset = 0
+
         self.gravitty = 1
         self.speed = 5
         self.x = x
@@ -43,6 +46,9 @@ class Megaman(Atributtes, Life_bar, Collision):
         self.on_ceiling = False
         self.jumping = False
 
+        self.shooting = False
+        self.shoot_timer = 0
+
         self.on_stair = False
         self.stopped = False
 
@@ -51,12 +57,25 @@ class Megaman(Atributtes, Life_bar, Collision):
             global_var.megaman_sprites["Megaman_Walk_2"],
             global_var.megaman_sprites["Megaman_Walk_3"],
             global_var.megaman_sprites["Megaman_Walk_2"],
+            global_var.megaman_sprites["Mega_Shoot_walk_1"],
+            global_var.megaman_sprites["Mega_Shoot_walk_2"],
+            global_var.megaman_sprites["Mega_Shoot_walk_3"],
+            global_var.megaman_sprites["Mega_Shoot_walk_2"],
         ]
-        self.idle_sprites = [global_var.megaman_sprites["Mega_Stand_0"]]
+        self.idle_sprites = [
+            global_var.megaman_sprites["Mega_Stand_0"],
+            global_var.megaman_sprites["Mega_Shoot_idle"],
+        ]
 
-        self.jump_sprites = [global_var.megaman_sprites["Mega_Jump"]]
+        self.jump_sprites = [
+            global_var.megaman_sprites["Mega_Jump"],
+            global_var.megaman_sprites["Mega_Shoot_jump"],
+        ]
 
-        self.stair_sprite = [global_var.megaman_sprites["Megaman_Ladder_1"]]
+        self.stair_sprite = [
+            global_var.megaman_sprites["Megaman_Ladder_1"],
+            global_var.megaman_sprites["Mega_Shoot_stair"],
+        ]
 
         self.knockback_sprite = global_var.megaman_sprites["Mega_Pain"]
 
@@ -86,7 +105,7 @@ class Megaman(Atributtes, Life_bar, Collision):
                     ):
                         mega_colision.left = coll.right + 1
                         self.x = mega_colision.left - 12 + cx
-                    elif mega_colision.right <= coll.left + self.speed + 1:
+                    elif mega_colision.right <= coll.left + self.speed + 10:
                         mega_colision.right = coll.left - 1
                         self.x = mega_colision.left - 13 + cx
 
@@ -238,47 +257,55 @@ class Megaman(Atributtes, Life_bar, Collision):
             self.y_coll = self.y + offset - global_var.camera_y
 
     def walk_animation(self):
-        if (
-            self.animation_index == 0
-            or self.animation_index == 10
-            or self.animation_index == 20
-            or self.animation_index == 30
-        ):
-            if self.left:
-                self.sprite = pygame.transform.flip(
-                    self.walk_sprites[self.animation_index // 10], 1, 0
-                )
-            else:
-                self.sprite = self.walk_sprites[self.animation_index // 10]
+        if self.shooting:
+            self.sprite = pygame.transform.flip(
+                self.walk_sprites[self.animation_index // (10) + 4], self.left, 0
+            )
+            if (
+                self.animation_index // 10 + 4 == 4
+                or self.animation_index // 10 + 4 == 6
+            ):
+                self.y_offset = -6
+            self.shooting_offset = 15 * (not self.left)
+        else:
+            self.sprite = pygame.transform.flip(
+                self.walk_sprites[self.animation_index // 10], self.left, 0
+            )
         self.is_idle()
         self.animation_index += 1
 
     def idle_animation(self):
-        if self.left:
-            self.sprite = self.idle_sprites[0]
+        if self.shooting:
+            self.sprite = pygame.transform.flip(self.idle_sprites[1], self.left, 0)
+            self.shooting_offset = 30 * (not self.left)
         else:
-            self.sprite = pygame.transform.flip(self.idle_sprites[0], 1, 0)
+            self.sprite = pygame.transform.flip(self.idle_sprites[0], not self.left, 0)
 
     def falling_animation(self):
-        if self.left:
-            self.sprite = pygame.transform.flip(self.jump_sprites[0], 1, 0)
+        if self.shooting:
+            self.sprite = pygame.transform.flip(self.jump_sprites[1], self.left, 0)
+            self.shooting_offset = 9 * (not self.left)
         else:
-            self.sprite = self.jump_sprites[0]
+            self.sprite = pygame.transform.flip(self.jump_sprites[0], self.left, 0)
 
     def stair_animation(self):
-        if self.moving:
+        if self.shooting:
+            self.sprite = pygame.transform.flip(self.stair_sprite[1], self.left, 0)
+            self.shooting_offset = 24 * (not self.left)
+        else:
             if self.animation_index <= 10 or 20 < self.animation_index <= 30:
                 self.sprite = self.stair_sprite[0]
             else:
                 self.sprite = pygame.transform.flip(self.stair_sprite[0], 1, 0)
-            self.animation_index += 1
+            if self.moving:
+                self.animation_index += 1
 
     def stunn_animation(self):
         self.sprite = pygame.transform.flip(self.knockback_sprite, self.left, 0)
 
     def animations(self):
         if not self.stopped:
-            if self.animation_index == 39:
+            if self.animation_index >= 39:
                 self.animation_index = 0
             if self.stunned:
                 self.stunn_animation()
@@ -294,8 +321,13 @@ class Megaman(Atributtes, Life_bar, Collision):
         if not self.knockback_inx % 4:
             self.display_to_blit.blit(
                 pygame.transform.scale_by(self.sprite.convert_alpha(), 3),
-                (self.x - global_var.camera_x, self.y - global_var.camera_y),
+                (
+                    self.x - global_var.camera_x - self.shooting_offset,
+                    self.y - global_var.camera_y - self.y_offset,
+                ),
             )
+            self.shooting_offset = 0
+            self.y_offset = 0
 
     def respawn(self):
         self.x = self.init_x
@@ -327,6 +359,14 @@ class Megaman(Atributtes, Life_bar, Collision):
         if self.knockback_inx >= 300:
             self.stunned = False
 
+    def handle_shoot_timer(self):
+        for i in range(100):
+            if not i % 10:
+                self.shoot_timer += 1
+        if self.shoot_timer >= 150:
+            self.shooting = False
+            self.shoot_timer = 0
+
     def run(self):
         if self.hp <= 0:
             self.respawn()
@@ -339,3 +379,5 @@ class Megaman(Atributtes, Life_bar, Collision):
             self.move_stair()
             self.jumping_state()
         self.animations()
+        if self.shooting:
+            self.handle_shoot_timer()

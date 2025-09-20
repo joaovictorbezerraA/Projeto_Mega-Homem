@@ -52,10 +52,10 @@ while running:
             if not mega.stunned and event.key == pygame.K_SPACE:
                 mega.jump()
             if not mega.stunned and event.key == pygame.K_j and global_var.shoots < 3:
-                buster_shoot = Shoot(mega.x, mega.y - 15)
+                buster_shoot = Shoot(mega.x - 130 * (not mega.left), mega.y - 15)
                 mega.shoot_direction = mega.left
                 shoots.append((buster_shoot, mega.shoot_direction))
-                buster.lemon_shoot(shoots)
+                buster.lemon_shoot(shoots, mega)
             if event.key == pygame.K_p:
                 if global_var.debug_mode is False:
                     global_var.debug_mode = True
@@ -72,7 +72,6 @@ while running:
     k = pygame.key.get_pressed()
     mega.keys_pressed = k
 
-    pygame.draw.rect(screen.display_screen, "blue", col_mega)
     floor_col = stage.handle_coll()
     stair_col = stage.handle_stair_coll()
     mega.colliding(col_mega, floor_col)
@@ -83,7 +82,7 @@ while running:
     mega.run()
     stage.spawn(segment, enemies_bl, "blaster")
     stage.spawn(segment, enemies_oct_b, "octopus")
-    buster.run(shoots)
+    buster.run(shoots, mega)
     blaster.run(enemies_bl, bullets, shoots, col_mega, mega)
     octopus_bat.run(enemies_oct_b, floor_col, shoots, col_mega, octopus_timer, mega)
     mega.display_health()
@@ -105,7 +104,7 @@ while running:
 
     pygame.display.flip()
 
-    dt = clock.tick(60) / 1000
+    dt = clock.tick(55) / 1000
     timer -= dt
     octopus_timer -= dt
     if octopus_timer <= 0:

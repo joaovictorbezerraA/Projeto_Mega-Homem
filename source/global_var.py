@@ -23,6 +23,7 @@ camera_x = 0
 camera_y = 0
 
 shoots = 0
+shooting = False
 
 disable_bunby_spawn = False
 

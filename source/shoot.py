@@ -1,14 +1,13 @@
 import pygame
 import global_var
-from collision import Collision
 from screen_config import Screen
-import camera
+from collision import Collision
 
 
 class Shoot(Collision):
     def __init__(self, x, y, width=6 * 3, height=6 * 3):
-        self.shoot_x = x
-        self.shoot_y = y
+        self.shoot_x = x + 60
+        self.shoot_y = y + 3
 
         self.width = width
         self.height = height
@@ -20,11 +19,13 @@ class Shoot(Collision):
         self.enable_sprite = False
         self.buster_sprite = [global_var.megaman_sprites["Mega_Buster"]]
 
-    def lemon_shoot(self, shoots):
+    def lemon_shoot(self, shoots, mega):
         if global_var.shoots < 3:
             global_var.shoots += 1
         for i in range(len(shoots) - 1, -1, -1):
             shoots[i][0].enable_sprite = True
+        mega.shooting = True
+        mega.shoot_timer = 0
 
     def draw_sprite(self, shoots):
         for i in range(len(shoots) - 1, -1, -1):
@@ -60,6 +61,6 @@ class Shoot(Collision):
         if global_var.shoots < 0:
             global_var.shoots = 0
 
-    def run(self, shoots):
+    def run(self, shoots, mega):
         self.draw_sprite(shoots)
         self.move_shoot(shoots)

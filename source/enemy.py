@@ -20,12 +20,13 @@ class Enemy(Collision):
         self.screen_to_blit = Screen.display_screen
         self.can_respawn = True
         self.attacking = True
+        self.defending = False
 
     def take_damage(self, enemies, shoots):
         for shoot in shoots:
             for enemy in enemies:
                 if enemy.collision.colliderect(shoot[0].collision):
-                    if enemy.attacking:
+                    if not enemy.defending:
                         enemy.health -= 1
                     shoot[0].delete_shoot(shoots, shoot)
 
@@ -86,7 +87,7 @@ class Blaster(Enemy, Projectile):
 
         self.collision = self.coll()
 
-        self.attacking = False
+        self.defending = False
         self.project = []
 
     def animation(self, enemies):
@@ -100,7 +101,7 @@ class Blaster(Enemy, Projectile):
                 enemies[i].active_sprite = pygame.transform.scale_by(
                     enemies[i].sprites[0].convert_alpha(), 3
                 )
-                enemies[i].attacking = False
+                enemies[i].defending = True
 
             elif enemies[i].anim_inx == 230:
                 enemies[i].active_sprite = pygame.transform.scale_by(
@@ -137,7 +138,7 @@ class Blaster(Enemy, Projectile):
                 enemies[i].active_sprite = pygame.transform.scale_by(
                     enemies[i].sprites[1].convert_alpha(), 3
                 )
-                enemies[i].attacking = True
+                enemies[i].defending = False
 
             elif enemies[i].anim_inx == 15:
                 enemies[i].active_sprite = pygame.transform.scale_by(
