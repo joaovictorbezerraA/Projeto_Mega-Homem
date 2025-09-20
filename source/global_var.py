@@ -17,13 +17,11 @@ stage_sprites = image_loader("./sprites/Stage")
 pj_sprites = image_loader("./sprites/Enemy_Sprites/Projectiles_Sprites")
 
 debug_mode = False
-wall_debug = False
 
 camera_x = 0
 camera_y = 0
 
 shoots = 0
-shooting = False
 
 disable_bunby_spawn = False
 
