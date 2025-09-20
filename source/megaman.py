@@ -218,7 +218,7 @@ class Megaman(Atributtes, Life_bar, Collision):
 
     def move_stair(self):
         cx = global_var.camera_x
-        if self.on_stair and not self.stunned:
+        if self.on_stair and not self.shooting:
             if self.keys_pressed[pygame.K_w]:
                 self.y_speed = -4
                 self.moving = True
