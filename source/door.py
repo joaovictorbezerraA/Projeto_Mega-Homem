@@ -61,7 +61,6 @@ class Door(Collision, Screen):
             self.opening = False
             global_var.opening = False
             self.already_open = True
-        print(self.open_inx)
 
     def run(self, megaman):
         self.draw_door()
