@@ -13,6 +13,7 @@ class Cutman(Enemy, Life_bar):
         self.max_health = max_health
         self.health = self.max_health
         self.character = "cutman"
+        self.damage = damage
 
         self.speed = 6
         self.y_speed = 0
@@ -83,7 +84,6 @@ class Cutman(Enemy, Life_bar):
             self.shoot_animation()
         else:
             self.idle_animation()
-        pygame.draw.rect(self.screen_to_blit, "pink", self.collision)
         self.screen_to_blit.blit(
             pygame.transform.scale_by(self.used_spr, 3), (self.x - cx, self.y - cy)
         )
@@ -147,8 +147,9 @@ class Cutman(Enemy, Life_bar):
         self.vertical_move()
 
     def jump(self, megaman, spc=0):
+        in_range = self.x - 48 * 3 <= megaman.x <= self.x + 48 * 3
         if self.on_ground:
-            if self.x - 48 * 3 <= megaman.x <= self.x + 48 * 3 or spc:
+            if in_range or (not in_range and spc):
                 for i in range(20):
                     if not i % 10:
                         self.x += 6
