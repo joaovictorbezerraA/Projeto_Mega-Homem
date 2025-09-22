@@ -8,6 +8,7 @@ class Shoot(Collision):
     def __init__(self, x, y, width=6 * 3, height=6 * 3):
         self.shoot_x = x + 60
         self.shoot_y = y + 3
+        self.shoot_speed = 12
 
         self.width = width
         self.height = height
@@ -43,15 +44,15 @@ class Shoot(Collision):
         cx = global_var.camera_x
         for i in range(len(shoots) - 1, -1, -1):
             if shoots[i][0].enable_sprite:
-                for j in range(120):
-                    if j % 10 == 0:
-                        if -60 + cx < shoots[i][0].shoot_x < 720 + cx:
-                            shoots[i][0].shoot_x += 1 * (1 - 2 * (not shoots[i][1]))
-                            shoots[i][0].x_coll = shoots[i][0].shoot_x
-                        else:
-                            shoots[i][0].enable_sprite = False
-                            self.delete_shoot(shoots, shoots[i])
-                            break
+                if -60 + cx < shoots[i][0].shoot_x < 720 + cx:
+                    shoots[i][0].shoot_x += self.shoot_speed * (
+                        1 - 2 * (not shoots[i][1])
+                    )
+                    shoots[i][0].x_coll = shoots[i][0].shoot_x
+                else:
+                    shoots[i][0].enable_sprite = False
+                    self.delete_shoot(shoots, shoots[i])
+                    break
 
     def delete_shoot(self, shoots, shoot):
         for i in range(len(shoots) - 1, -1, -1):

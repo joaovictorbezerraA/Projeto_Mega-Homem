@@ -225,19 +225,17 @@ class Helicopter(Enemy):
     def move(self, enemies):
         cx = global_var.camera_x
         for i in range(len(enemies)):
-            for j in range(100):
-                if j * 10 == 0:
-                    if enemies[i].x >= 720 + cx:
-                        enemies[i].direction = False
-                    if enemies[i].x <= -50 + cx:
-                        enemies[i].direction = True
-                    if enemies[i].direction:
-                        enemies[i].x += 4
-                        enemies[i].x_coll += 4
-                    else:
-                        enemies[i].x -= 4
-                        enemies[i].x_coll -= 4
-                    enemies[i].collision = enemies[i].coll(0, 5, 10)
+            if enemies[i].x >= 720 + cx:
+                enemies[i].direction = False
+            if enemies[i].x <= -50 + cx:
+                enemies[i].direction = True
+            if enemies[i].direction:
+                enemies[i].x += 4
+                enemies[i].x_coll += 4
+            else:
+                enemies[i].x -= 4
+                enemies[i].x_coll -= 4
+            enemies[i].collision = enemies[i].coll(0, 5, 10)
 
     def attack(self, enemies, mega_x, mega_y):
         for i in range(len(enemies)):
@@ -357,22 +355,20 @@ class Octopus(Enemy):
             )
 
     def move(self, octopus):
-        for i in range(100):
-            if i % 10 == 0:
-                if octopus.direction:
-                    if octopus.way:
-                        octopus.speed = -0.8
-                    else:
-                        octopus.speed = 0.8
-                    octopus.y += octopus.speed
-                    octopus.y_coll = octopus.y
-                else:
-                    if octopus.way:
-                        octopus.speed = 0.8
-                    else:
-                        octopus.speed = -0.8
-                    octopus.x += octopus.speed
-                    octopus.x_coll = octopus.x
+        if octopus.direction:
+            if octopus.way:
+                octopus.speed = -8
+            else:
+                octopus.speed = 8
+            octopus.y += octopus.speed
+            octopus.y_coll = octopus.y
+        else:
+            if octopus.way:
+                octopus.speed = 8
+            else:
+                octopus.speed = -8
+            octopus.x += octopus.speed
+            octopus.x_coll = octopus.x
 
     def stop(self, enemies, stage_col):
         cx = global_var.camera_x

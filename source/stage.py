@@ -65,7 +65,9 @@ class Stage(Stage_collisions):
     def change_segment(self, coordinates):
         on_seg_1 = coordinates[0] < 2690 and coordinates[1] > -30
         on_seg_2 = coordinates[0] >= 2690 or coordinates[1] < -30
-        on_seg_3 = coordinates[0] >= 2496 and coordinates[1] <= -2490
+        on_seg_3 = (coordinates[0] >= 2496 and coordinates[1] <= -2490) or coordinates[
+            0
+        ] > 3200
         on_seg_4 = coordinates[0] >= 4410 or coordinates[1] <= -3120
         on_seg_5 = coordinates[0] >= 4120 and coordinates[1] <= -5560
         on_seg_6 = coordinates[0] >= 5412 and coordinates[1] > -5560

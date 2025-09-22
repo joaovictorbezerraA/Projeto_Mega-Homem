@@ -60,5 +60,5 @@ def cam_move(
             and pos[0] < 8038 + 768 + 48 + 768 * global_var.second_door_open
         ):
             global_var.camera_x += speed_x
-        if not right and pos_relativa_x < middle and pos[0] >= 7277:
+        if not right and pos_relativa_x < middle and 9167 > pos[0] >= 7277:
             global_var.camera_x -= speed_x

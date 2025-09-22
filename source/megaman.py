@@ -17,8 +17,11 @@ pygame.init()
 
 
 class Megaman(Atributtes, Life_bar, Collision):
-    def __init__(self, x, y, hp=24, width=14 * 3, height=23 * 3):
-        super().__init__(hp)
+    def __init__(self, x, y, health=28, width=14 * 3, height=23 * 3):
+        super().__init__(health)
+        self.alive = True
+        self.mid_transition = False
+
         self.shooting_offset = 0
         self.y_offset = 0
 
@@ -51,6 +54,8 @@ class Megaman(Atributtes, Life_bar, Collision):
 
         self.on_stair = False
         self.stopped = False
+        self.invincible = False
+        self.death_timer = 0
 
         self.walk_sprites = [
             global_var.megaman_sprites["Megaman_Walk_1"],
@@ -81,6 +86,8 @@ class Megaman(Atributtes, Life_bar, Collision):
 
         self.sprite = self.idle_sprites[0]
 
+        self.character = "megaman"
+
         self.display_to_blit = Screen.display_screen
 
     def falling(self):
@@ -105,7 +112,7 @@ class Megaman(Atributtes, Life_bar, Collision):
                     ):
                         mega_colision.left = coll.right + 1
                         self.x = mega_colision.left - 12 + cx
-                    elif mega_colision.right <= coll.left + self.speed + 10:
+                    elif mega_colision.right <= coll.left + 2 * self.speed:
                         mega_colision.right = coll.left - 1
                         self.x = mega_colision.left - 13 + cx
 
@@ -233,7 +240,7 @@ class Megaman(Atributtes, Life_bar, Collision):
         if self.onground and not global_var.opening:
             self.jumping = True
             if not (self.on_ceiling or self.on_stair):
-                self.y_speed -= 6
+                self.y_speed -= 9
                 self.vertical_move()
 
     def jumping_state(self):
@@ -324,17 +331,22 @@ class Megaman(Atributtes, Life_bar, Collision):
             self.y_offset = 0
 
     def respawn(self):
+        self.stunned = False
+        self.invincible = False
+        self.left = True
+        self.health = 28
+        self.mid_transition = False
+        self.alive = True
         global_var.enable_boss = False
         self.x = self.init_x
         self.y = self.init_y
         global_var.camera_x = 0
         global_var.camera_y = 0
-        self.hp = 28
 
     def take_damage(self, damage):
         if not self.invincible:
             self.on_stair = False
-            self.hp -= damage
+            self.health -= damage
             self.invincible = True
             self.stunned = True
 
@@ -357,17 +369,29 @@ class Megaman(Atributtes, Life_bar, Collision):
             self.shooting = False
             self.shoot_timer = 0
 
+    def handle_death(self):
+        if self.health <= 0:
+            self.death_timer += 1
+            self.alive = False
+            if self.death_timer >= 50:
+                self.display_to_blit.fill("black")
+                self.mid_transition = True
+
+            if self.death_timer == 120:
+                self.respawn()
+                self.death_timer = 0
+
     def run(self):
-        if self.hp <= 0:
-            self.respawn()
         self.stopped = global_var.opening
+        self.handle_death()
         if self.invincible:
             self.knockback()
-        if not self.stopped:
-            self.move_left()
-            self.move_right()
-            self.move_stair()
-            self.jumping_state()
-        self.animations()
+        if self.alive:
+            if not self.stopped:
+                self.move_left()
+                self.move_right()
+                self.move_stair()
+                self.jumping_state()
+            self.animations()
         if self.shooting:
             self.handle_shoot_timer()

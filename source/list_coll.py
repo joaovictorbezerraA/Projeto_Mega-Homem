@@ -407,7 +407,7 @@ og_stair_col_7 = [
 
 f8_0 = pygame.Rect(138 * bw, -70 * bh, 60 * bw, bh)
 f8_1 = pygame.Rect(138 * bw, -75 * bh, 55 * bw, bh)
-f8_2 = pygame.Rect(197 * bw, -69 * bh, bw, bh)
+f8_2 = pygame.Rect(197 * bw, -69 * bh, bw, 2 * bh)
 f8_3 = pygame.Rect(198 * bw, -68 * bh, 9 * bw, bh)
 
 w8_0 = pygame.Rect(207 * bw, -78 * bh, bw, 10 * bh)

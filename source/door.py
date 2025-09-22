@@ -35,19 +35,12 @@ class Door(Collision, Screen):
     def draw_door(self):
         cx = global_var.camera_x
         cy = global_var.camera_y
-        if not self.kind:
-            for i in range(16 - self.open_inx):
+        for i in range(2):
+            for j in range(16 - self.open_inx):
                 self.screen.blit(
                     pygame.transform.scale_by(self.sprite.convert_alpha(), 3),
-                    (self.x - cx, self.y + 12 * i - cy),
+                    (self.x + 48 * i - cx, self.y + 12 * j - cy),
                 )
-        elif self.kind:
-            for i in range(2):
-                for j in range(16 - self.open_inx):
-                    self.screen.blit(
-                        pygame.transform.scale_by(self.sprite.convert_alpha(), 3),
-                        (self.x + 48 * i - cx, self.y + 12 * j - cy),
-                    )
         self.collision = self.coll()
 
     def door_anim(self):

@@ -1,6 +1,6 @@
 from image_loading import image_loader
 
-main_sprite = "Mega_Stand_0"
+tittle_screen_spr = image_loader("./sprites/Tittle_Screen")
 
 megaman_sprites = image_loader("./sprites/Megaman_Sprites")
 
@@ -16,8 +16,11 @@ stage_sprites = image_loader("./sprites/Stage")
 
 pj_sprites = image_loader("./sprites/Enemy_Sprites/Projectiles_Sprites")
 
+cutman_sprites = image_loader("./sprites/Boss_Sprites")
 debug_mode = False
 
+# camera_x = 6200
+# camera_y = -3800
 camera_x = 0
 camera_y = 0
 
@@ -28,3 +31,4 @@ disable_bunby_spawn = False
 opening = False
 first_door_open = False
 second_door_open = False
+enable_boss = False

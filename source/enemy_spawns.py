@@ -1,5 +1,6 @@
 from enemy import Blaster, Octopus
-from source import global_var
+from cutman import Cutman
+
 
 offset = 3
 bw = 3 * 16
