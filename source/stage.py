@@ -62,6 +62,14 @@ class Stage(Stage_collisions):
                 pygame.draw.rect(self.screen, "green", coll)
         return self.stairs_collisions
 
+    def handle_death_coll(self):
+        debug = global_var.debug_mode
+        self.update_death_coll()
+        for coll in self.death_collisions:
+            if debug:
+                pygame.draw.rect(self.screen, "blue", coll)
+        return self.death_collisions
+
     def change_segment(self, coordinates):
         on_seg_1 = coordinates[0] < 2690 and coordinates[1] > -30
         on_seg_2 = coordinates[0] >= 2690 or coordinates[1] < -30

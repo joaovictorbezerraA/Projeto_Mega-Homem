@@ -67,6 +67,7 @@ class Cutman(Enemy, Life_bar):
 
         self.choice = 1
 
+        self.starting = True
         self.alive = True
 
     def animation(self):
@@ -243,8 +244,16 @@ class Cutman(Enemy, Life_bar):
             self.x = 9813
             self.y = -3333
             self.health = self.max_health
+            self.starting = True
+
+    def __on_startup__(self):
+        self.starting = False
+        pygame.mixer.music.load("./audio/music/Boss_Theme.mp3")
+        pygame.mixer.music.play(-1)
 
     def run(self, boss, rol_cut, floor_collision, megaman, mega_col, shoots):
+        if self.starting:
+            self.__on_startup__()
         self.restart(megaman)
         self.life_check()
         if len(rol_cut) == 0:

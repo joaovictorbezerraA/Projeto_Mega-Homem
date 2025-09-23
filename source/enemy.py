@@ -2,6 +2,7 @@ import pygame
 from random import randint
 
 import global_var
+import sounds
 from collision import Collision
 from screen_config import Screen
 from projectile import Projectile
@@ -157,6 +158,7 @@ class Blaster(Enemy, Projectile):
     def attack(self, enemy, kind):
         proj = Projectile(enemy.direction, enemy.x, enemy.y, kind)
         enemy.project.append(proj)
+        sounds.enemy_fire.play()
 
     def run_proj(self, enemies, obj_bull, mega_col, mega):
         for i in range(len(enemies) - 1, -1, -1):
@@ -282,7 +284,7 @@ class Helicopter(Enemy):
             segment == "Cutman_Stage_Segment_1"
             or segment == "Cutman_Stage_Segment_3"
             or segment == "Cutman_Stage_Segment_5"
-        ) and len(rand_enemies) < 5:
+        ) and len(rand_enemies) < 3:
             rand_enemies.append(Helicopter(720 + spawn_x, randint(100, 600) + spawn_y))
         return rand_enemies
 

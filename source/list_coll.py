@@ -353,6 +353,9 @@ st6_1 = pygame.Rect(118 * bw, -109 * bh - 1, bw, 2 * bh)
 st6_2 = pygame.Rect(118 * bw, -99 * bh - 1, bw, 5 * bh)
 st6_3 = pygame.Rect(114 * bw, -83 * bh - 1, bw, 7 * bh + 1)
 
+d6_0 = pygame.Rect(125 * bw, -93 * bh, 2 * bw, bh)
+d6_1 = pygame.Rect(120 * bw, -83 * bh, 8 * bw, bh)
+
 og_floor_col_6 = [
     f6_0,
     f6_0_2,
@@ -382,6 +385,11 @@ og_stair_col_6 = [
     st6_1,
     st6_2,
     st6_3,
+]
+
+og_death_col_6 = [
+    d6_0,
+    d6_1,
 ]
 
 f7_0 = pygame.Rect(114 * bw, -72 * bh, 4 * bw, 2 * bh)
@@ -419,14 +427,14 @@ og_floor_col_8 = [
     w8_0,
 ]
 collisions = {
-    "Cutman_Stage_Segment_1": [og_floor_col, og_stair_col],
-    "Cutman_Stage_Segment_2": [og_floor_col_2, og_stair_col_2],
-    "Cutman_Stage_Segment_3": [og_floor_col_3, og_stair_col_3],
-    "Cutman_Stage_Segment_4": [og_floor_col_4, og_stair_col_4],
-    "Cutman_Stage_Segment_5": [og_floor_col_5, og_stair_col_5],
-    "Cutman_Stage_Segment_6": [og_floor_col_6, og_stair_col_6],
-    "Cutman_Stage_Segment_7": [og_floor_col_7, og_stair_col_7],
-    "Cutman_Stage_Segment_8": [og_floor_col_8, []],
+    "Cutman_Stage_Segment_1": [og_floor_col, og_stair_col, []],
+    "Cutman_Stage_Segment_2": [og_floor_col_2, og_stair_col_2, []],
+    "Cutman_Stage_Segment_3": [og_floor_col_3, og_stair_col_3, []],
+    "Cutman_Stage_Segment_4": [og_floor_col_4, og_stair_col_4, []],
+    "Cutman_Stage_Segment_5": [og_floor_col_5, og_stair_col_5, []],
+    "Cutman_Stage_Segment_6": [og_floor_col_6, og_stair_col_6, og_death_col_6],
+    "Cutman_Stage_Segment_7": [og_floor_col_7, og_stair_col_7, []],
+    "Cutman_Stage_Segment_8": [og_floor_col_8, [], []],
 }
 
 d0 = Door(141 * bw, -74 * bh, 1)

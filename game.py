@@ -1,5 +1,6 @@
 import sys
 import pygame
+from pygame import mixer
 
 sys.path.insert(1, "source")
 
@@ -13,8 +14,12 @@ from stage import Stage
 from projectile import Projectile
 import camera
 import global_var
+import sounds
 
 pygame.init()
+mixer.init()
+
+pygame.mixer.music.load("./audio/music/Cutman_Stage_Theme.mp3")
 
 screen = Screen()
 clock = pygame.time.Clock()
@@ -51,6 +56,9 @@ rolling_cutter = []
 tittle_screen(screen)
 boss_enabled = 0
 
+mixer.music.set_volume(0.5)
+pygame.mixer.music.play(-1)
+
 while running:
     screen.display_screen.fill("#00e8d8")
     stage.change_segment((mega.x, mega.y))
@@ -73,6 +81,7 @@ while running:
                 mega.shoot_direction = mega.left
                 shoots.append((buster_shoot, mega.shoot_direction))
                 buster.lemon_shoot(shoots, mega)
+                sounds.shoot.play()
             if event.key == pygame.K_p:
                 if global_var.debug_mode is False:
                     global_var.debug_mode = True
@@ -91,8 +100,10 @@ while running:
 
     floor_col = stage.handle_coll()
     stair_col = stage.handle_stair_coll()
+    death_col = stage.handle_death_coll()
     mega.colliding(col_mega, floor_col)
     mega.on_stair_coll(events, col_mega, stair_col)
+    mega.on_death_coll(col_mega, death_col)
 
     segment = stage.selected_sprite
 

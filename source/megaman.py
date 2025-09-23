@@ -4,6 +4,7 @@ from collision import Collision
 from screen_config import Screen
 from character_attributes import Atributtes
 from life_bar import Life_bar
+import sounds
 
 pygame.init()
 
@@ -181,6 +182,11 @@ class Megaman(Atributtes, Life_bar, Collision):
                             self.x = coll.left + cx
                             self.x_coll = self.x - cx
 
+    def on_death_coll(self, mega_col, collision):
+        for i in range(len(collision) - 1, -1, -1):
+            if mega_col.colliderect(collision[i]):
+                self.health = 0
+
     def is_idle(self):
         if not (
             self.keys_pressed[pygame.K_RIGHT] or self.keys_pressed[pygame.K_LEFT]
@@ -342,9 +348,12 @@ class Megaman(Atributtes, Life_bar, Collision):
         self.y = self.init_y
         global_var.camera_x = 0
         global_var.camera_y = 0
+        pygame.mixer.music.load("./audio/music/Cutman_Stage_Theme.mp3")
+        pygame.mixer.music.play(-1)
 
     def take_damage(self, damage):
-        if not self.invincible:
+        if self.alive and not self.invincible:
+            sounds.damage.play()
             self.on_stair = False
             self.health -= damage
             self.invincible = True
@@ -371,6 +380,9 @@ class Megaman(Atributtes, Life_bar, Collision):
 
     def handle_death(self):
         if self.health <= 0:
+            if self.death_timer == 0:
+                pygame.mixer.music.stop()
+                sounds.death.play()
             self.death_timer += 1
             self.alive = False
             if self.death_timer >= 50:
