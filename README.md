@@ -8,3 +8,4 @@ The following requisites are necessary to run the game:
 # Running Instructions
 To run this program it's required to execute the file game.py
 with the python command
+while pygame is active
