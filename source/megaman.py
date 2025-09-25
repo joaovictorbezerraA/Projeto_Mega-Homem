@@ -11,7 +11,7 @@ pygame.init()
 clock = pygame.time.Clock()
 
 pixel_offset = 10
-pixel_offset_y = 3
+pixel_offset_y = 10
 col_right_offset = 34
 
 pygame.init()
@@ -91,6 +91,8 @@ class Megaman(Atributtes, Life_bar, Collision):
 
         self.display_to_blit = Screen.display_screen
 
+        self.collision = self.coll(1)
+
     def falling(self):
         if not self.on_stair and not self.stopped:
             self.y_speed = self.gravitty * self.falling_counter
@@ -115,6 +117,7 @@ class Megaman(Atributtes, Life_bar, Collision):
                     elif mega_colision.right <= coll.left + 2 * self.speed:
                         mega_colision.right = coll.left - 1
                         self.x = mega_colision.left - 13 + cx
+                        print("aaa")
 
                     elif (
                         mega_colision.bottom > coll.top - self.y_speed
@@ -189,12 +192,16 @@ class Megaman(Atributtes, Life_bar, Collision):
     def is_idle(self):
         if not (
             self.keys_pressed[pygame.K_RIGHT] or self.keys_pressed[pygame.K_LEFT]
-        ) or (self.keys_pressed[pygame.K_LEFT] and self.keys_pressed[pygame.K_RIGHT]):
+        ) or (
+            self.keys_pressed[pygame.K_LEFT]
+            and self.keys_pressed[pygame.K_RIGHT]
+            or self.stunned
+        ):
             self.moving = False
             if not self.on_stair:
                 self.animation_index = 0
             self.y_coll = self.y + pixel_offset_y - global_var.camera_y
-            self.x_coll = self.x + pixel_offset - global_var.camera_x
+            self.x_coll = self.x + pixel_offset + 4 - global_var.camera_x
 
     def move_right(self):
         cy = global_var.camera_y
@@ -203,11 +210,11 @@ class Megaman(Atributtes, Life_bar, Collision):
             and self.x - global_var.camera_x < 720 - 58
             and not self.stunned
         ):
-            self.left = True
             if not self.on_stair:
                 self.moving = True
                 self.x += self.speed
                 self.x_coll = self.x + pixel_offset - global_var.camera_x
+            self.left = True
         self.is_idle()
         self.y_coll = self.y + 1 - cy
 
@@ -218,11 +225,11 @@ class Megaman(Atributtes, Life_bar, Collision):
             and self.x - global_var.camera_x > -10
             and not self.stunned
         ):
-            self.left = False
             if not self.on_stair:
                 self.moving = True
                 self.x -= self.speed
                 self.x_coll = self.x + pixel_offset - global_var.camera_x + 3
+            self.left = False
         self.is_idle()
         self.y_coll = self.y + 1 - cy
 
@@ -245,7 +252,7 @@ class Megaman(Atributtes, Life_bar, Collision):
         if self.onground and not global_var.opening:
             self.jumping = True
             if not (self.on_ceiling or self.on_stair):
-                self.y_speed -= 9
+                self.y_speed -= 15
                 self.vertical_move()
 
     def jumping_state(self):
@@ -362,7 +369,7 @@ class Megaman(Atributtes, Life_bar, Collision):
         cx = global_var.camera_x
         self.knockback_inx += 10
         if self.stunned:
-            self.x += 1 - 2 * self.left
+            self.x += 2 - 4 * self.left
             self.x_coll = self.x - cx
         if self.knockback_inx == 700:
             self.knockback_inx = 0
@@ -370,7 +377,7 @@ class Megaman(Atributtes, Life_bar, Collision):
 
         if self.knockback_inx == 300:
             self.stunned = False
-            self.x += 10
+            self.x += -10 + 20 * (self.left)
 
     def handle_shoot_timer(self):
         self.shoot_timer += 10
@@ -409,3 +416,4 @@ class Megaman(Atributtes, Life_bar, Collision):
             self.animations()
         if self.shooting:
             self.handle_shoot_timer()
+        self.collision = self.coll(1)
