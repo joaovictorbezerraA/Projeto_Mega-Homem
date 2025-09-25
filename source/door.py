@@ -1,7 +1,9 @@
 import pygame
+
+import global_var
+import sounds
 from collision import Collision
 from screen_config import Screen
-import global_var
 
 
 class Door(Collision, Screen):
@@ -44,19 +46,21 @@ class Door(Collision, Screen):
         self.collision = self.coll()
 
     def door_anim(self):
-        for i in range(100):
-            if not i % 10:
-                self.anim_inx += 1
+        self.anim_inx += 10
         if self.anim_inx == 300:
             self.open_inx += 4
+            sounds.door_open.play()
             self.anim_inx = 0
         if self.open_inx == 16:
             self.opening = False
             global_var.opening = False
             self.already_open = True
 
-    def run(self, megaman):
+    def run(self, megaman, mega_col):
+        if not megaman.alive:
+            self.open_inx = 0
+            self.already_open = False
         self.draw_door()
         if self.opening:
             self.door_anim()
-        self.open(megaman)
+        self.open(mega_col)

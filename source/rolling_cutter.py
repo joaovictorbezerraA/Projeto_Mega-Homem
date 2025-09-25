@@ -82,4 +82,4 @@ class Rolling_Cutter(Projectile):
         self.rotate()
         self.display_on_screen()
         self.move(cutman, projectiles)
-        self.check_col(projectiles, col_mega, megaman, damage=5)
+        self.check_collision(projectiles, col_mega, megaman, damage=5)

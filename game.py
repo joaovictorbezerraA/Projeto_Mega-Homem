@@ -8,7 +8,7 @@ from tittle import tittle_screen
 from megaman import Megaman
 from screen_config import Screen
 from shoot import Shoot
-from enemy import Helicopter, Blaster, Octopus
+from enemy import Helicopter, Blaster, Octopus, Big_eye
 from cutman import Cutman
 from stage import Stage
 from projectile import Projectile
@@ -40,8 +40,9 @@ buster = Shoot(mega.x_coll + 30, mega.y_coll)
 col_mega = mega.coll()
 stage = Stage()
 bundy = Helicopter(0, 0)
-blaster = Blaster(600, 600)
+blaster = Blaster(0, 0)
 octopus_bat = Octopus(16 * 3 * 14, 21 * 3 * 5, True, False)
+eye = Big_eye(0, 0)
 bullets = Projectile(1, 0, 0, 0)
 cut = Cutman(9813, -3333)
 
@@ -49,6 +50,7 @@ shoots = []
 random_enemies = []
 enemies_bl = []
 enemies_oct_b = []
+enemies_b_e = []
 
 boss = []
 rolling_cutter = []
@@ -121,15 +123,19 @@ while running:
     if not mega.mid_transition:
         stage.spawn(segment, enemies_bl, "blaster")
         stage.spawn(segment, enemies_oct_b, "octopus")
+        stage.spawn(segment, enemies_b_e, "big_eye")
         buster.run(shoots, mega)
         blaster.run(enemies_bl, bullets, shoots, col_mega, mega)
         octopus_bat.run(enemies_oct_b, floor_col, shoots, col_mega, octopus_timer, mega)
+        eye.run(enemies_b_e, floor_col, shoots, col_mega, mega)
         mega.display_health()
         doors = stage.list_doors(segment)
         for door in doors:
-            door.run(col_mega)
-        bundy.run(random_enemies, mega.x, mega.y, col_mega, shoots, mega)
+            door.run(mega, col_mega)
+    bundy.run(random_enemies, mega.x, mega.y, col_mega, shoots, mega)
     mega.display_health()
+    if mega.mid_transition:
+        random_enemies = []
 
     camera.cam_move(
         segment,

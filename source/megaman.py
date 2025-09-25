@@ -108,9 +108,8 @@ class Megaman(Atributtes, Life_bar, Collision):
             if mega_colision.colliderect(coll):
                 if not self.on_stair:
                     if (
-                        not self.left
-                        and mega_colision.right >= coll.right + col_right_offset
-                    ):
+                        not self.left or (self.stunned and self.left)
+                    ) and mega_colision.right >= coll.right + col_right_offset:
                         mega_colision.left = coll.right + 1
                         self.x = mega_colision.left - 12 + cx
                     elif mega_colision.right <= coll.left + 2 * self.speed:
@@ -369,8 +368,9 @@ class Megaman(Atributtes, Life_bar, Collision):
             self.knockback_inx = 0
             self.invincible = False
 
-        if self.knockback_inx >= 300:
+        if self.knockback_inx == 300:
             self.stunned = False
+            self.x += 10
 
     def handle_shoot_timer(self):
         self.shoot_timer += 10
@@ -388,6 +388,8 @@ class Megaman(Atributtes, Life_bar, Collision):
             if self.death_timer >= 50:
                 self.display_to_blit.fill("black")
                 self.mid_transition = True
+                global_var.first_door_open = False
+                global_var.second_door_open = False
 
             if self.death_timer == 120:
                 self.respawn()

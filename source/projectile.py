@@ -64,7 +64,7 @@ class Projectile(Collision):
                 (shoots[i].x - cx, shoots[i].y - cy),
             )
 
-    def check_col(self, enemies, mega_col, mega, damage=1):
+    def check_collision(self, enemies, mega_col, mega, damage=1):
         for i in range(len(enemies) - 1, -1, -1):
             if mega_col.colliderect(enemies[i].collision):
                 mega.take_damage(damage)
@@ -72,4 +72,4 @@ class Projectile(Collision):
     def run_shoots(self, shoots, mega_col, mega):
         self.show(shoots)
         self.move_shoot(shoots)
-        self.check_col(shoots, mega_col, mega)
+        self.check_collision(shoots, mega_col, mega)

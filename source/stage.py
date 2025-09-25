@@ -133,9 +133,18 @@ class Stage(Stage_collisions):
             self.selected_seg = "Cutman_Stage_Segment_1"
 
     def spawn(self, segment, enemies, name):
-        if segment == "Cutman_Stage_Segment_1" or segment == "Cutman_Stage_Segment_2":
-            if name == "blaster":
+        if name == "blaster":
+            if (
+                segment == "Cutman_Stage_Segment_1"
+                or segment == "Cutman_Stage_Segment_2"
+            ):
                 enemy_spawns.spawn_blasters(segment, enemies)
-        if segment == "Cutman_Stage_Segment_3" or segment == "Cutman_Stage_Segment_4":
-            if name == "octopus":
+        if name == "octopus":
+            if (
+                segment == "Cutman_Stage_Segment_3"
+                or segment == "Cutman_Stage_Segment_4"
+            ):
                 enemy_spawns.spawn_octopus(segment, enemies)
+        if name == "big_eye":
+            if segment == "Cutman_Stage_Segment_7":
+                enemy_spawns.spawn_big_eye(segment, enemies)

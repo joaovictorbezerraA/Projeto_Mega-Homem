@@ -10,7 +10,7 @@ class Collision:
         self.width = width
         self.height = height
 
-    def coll(self, megaman=0, offset_x=0, offset_y=0):
+    def coll(self, megaman=0, offset_x=0, offset_y=0, offset_width=0, offset_height=0):
         if not megaman:
             cx = global_var.camera_x
             cy = global_var.camera_y
@@ -20,6 +20,6 @@ class Collision:
         return pygame.Rect(
             self.x_coll + offset_x - cx,
             self.y_coll + offset_y - cy,
-            self.width,
-            self.height,
+            self.width + offset_width,
+            self.height + offset_height,
         )

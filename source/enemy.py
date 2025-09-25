@@ -12,9 +12,12 @@ class Enemy(Collision):
     def __init__(self, x, y, width=48, height=48, health=0, damage=1):
         self.x = x
         self.y = y
+        self.init_x = self.x
+        self.init_y = self.y
         self.width = width
         self.height = height
         self.health = health
+        self.max_health = self.health
         self.damage = damage
         self.spawned = False
         self.anim_inx = 0
@@ -29,6 +32,8 @@ class Enemy(Collision):
                 if enemy.collision.colliderect(shoot[0].collision):
                     if not enemy.defending:
                         enemy.health -= 1
+                    else:
+                        sounds.reflect_fire.play()
                     shoot[0].delete_shoot(shoots, shoot)
 
     def check_col(self, enemies, mega_col, mega):
@@ -45,13 +50,17 @@ class Enemy(Collision):
             ):
                 enemies[i].can_respawn = True
                 if enemies[i].health == 0:
-                    enemies[i].health = 1
+                    enemies[i].health = enemies[i].max_health
                 enemies.remove(enemies[i])
 
     def check_health(self, enemies):
         for i in range(len(enemies) - 1, -1, -1):
             if enemies[i].health == 0:
                 enemies[i].can_respawn = True
+                enemies[i].x = enemies[i].init_x
+                enemies[i].y = enemies[i].init_y
+                enemies[i].x_coll = enemies[i].x
+                enemies[i].y_coll = enemies[i].y
                 enemies.remove(enemies[i])
 
 
@@ -434,3 +443,168 @@ class Octopus(Enemy):
         if dt == 2:
             self.change_way(enemies)
         self.check_col(enemies, mega_col, mega)
+
+
+class Big_eye(Enemy):
+    def __init__(self, x, y, width=48, height=48 * 3, health=30, damage=7):
+        super().__init__(x, y, width, height, health, damage)
+
+        self.x_coll = self.x
+        self.y_coll = self.y
+        self.health = 30
+
+        self.sprites = [
+            global_var.bigeye_sprites["Grounded"],
+            global_var.bigeye_sprites["Jump"],
+        ]
+        self.used_spr = self.sprites[1]
+
+        self.direction = False  # False is Left, True is Right
+        self.collision = self.coll()
+
+        self.speed = 0
+        self.y_speed = 0
+
+        self.attacking = True
+        self.defending = False
+
+        self.jumping = False
+        self.on_ground = True
+
+        self.jump_indx = 0
+        self.gravity = 1
+        self.falling_mult = 0
+
+        self.target = 0
+        self.dead = False
+        self.colliding = False
+        self.can_respawn = True
+
+    def collision_check(self, enemies, stage_collision):
+        cx = global_var.camera_x
+        cy = global_var.camera_y
+        for i in range(len(enemies) - 1, -1, -1):
+            enemies[i].colliding = False
+            for coll in stage_collision:
+                if enemies[i].collision.colliderect(coll):
+                    if (
+                        not enemies[i].direction
+                        and enemies[i].collision.right >= coll.right + 34
+                    ):
+                        enemies[i].collision.left = coll.right + 1
+                        enemies[i].x = enemies[i].collision.left - 12 + cx
+                    elif (
+                        enemies[i].direction
+                        and enemies[i].collision.right
+                        <= coll.left + enemies[i].speed + 34
+                    ):
+                        enemies[i].collision.right = coll.left
+                        enemies[i].x = enemies[i].collision.left - 34 + cx
+
+                    elif (
+                        enemies[i].collision.bottom > coll.top - enemies[i].y_speed
+                        and enemies[i].collision.top < coll.top
+                    ):
+                        enemies[i].on_ground = True
+                        enemies[i].falling_mult = 0
+                        enemies[i].y_speed = 0
+                        enemies[i].colliding = True
+                        enemies[i].collision.bottom = coll.top + 5
+                        enemies[i].y = enemies[i].collision.top + cy
+                        enemies[i].jumping = False
+                    elif (
+                        enemies[i].collision.top < coll.bottom + enemies[i].y_speed
+                        and enemies[i].collision.bottom > coll.bottom
+                    ):
+                        enemies[i].jumping = False
+                        enemies[i].collision.top = coll.bottom
+                        enemies[i].y = enemies[i].collision.top + cy
+
+                    else:
+                        if enemies[i].collision.top + 55 <= coll.top:
+                            enemies[i].x -= 8
+            enemies[i].x_coll = enemies[i].x
+            enemies[i].y_coll = enemies[i].y
+            if not enemies[i].colliding:
+                enemies[i].on_ground = False
+                self.falling(enemies[i])
+
+    def follow(self, enemies, megaman):
+        for i in range(len(enemies) - 1, -1, -1):
+            enemies[i].jump_indx += 1
+            if not enemies[i].jumping:
+                enemies[i].target = megaman.x
+                if enemies[i].target > enemies[i].x:
+                    enemies[i].direction = True
+                else:
+                    enemies[i].direction = False
+            if enemies[i].jump_indx >= 50:
+                if not enemies[i].jumping:
+                    self.jump(enemies[i])
+                enemies[i].speed = -5 + 10 * enemies[i].direction
+                enemies[i].x += enemies[i].speed
+
+            if (
+                enemies[i].jump_indx > 50
+                and enemies[i].jumping
+                and enemies[i].on_ground
+            ):
+                sounds.landing.play()
+                enemies[i].y_speed = 0
+                enemies[i].jump_indx = 0
+
+    def jump(self, enem):
+        enem.jumping = True
+        enem.y_speed -= 8
+        self.vertical_move(enem)
+
+    def falling(self, enem):
+        enem.jumping = True
+        enem.falling_mult += 0.025
+        if enem.y_speed < 10:
+            enem.y_speed += enem.gravity * enem.falling_mult
+        self.vertical_move(enem)
+
+    def vertical_move(self, enem):
+        enem.y += enem.y_speed
+
+    def animation(self, enemies):
+        cx = global_var.camera_x
+        cy = global_var.camera_y
+        for i in range(len(enemies) - 1, -1, -1):
+            if enemies[i].jumping:
+                self.jump_animation(enemies[i])
+            else:
+                enemies[i].used_spr = enemies[i].sprites[0]
+                enemies[i].collision = enemies[i].coll(
+                    0, 36 * enemies[i].direction, 24, 0, 0
+                )
+            self.screen_to_blit.blit(
+                pygame.transform.scale_by(
+                    pygame.transform.flip(enemies[i].used_spr, enemies[i].direction, 0),
+                    3,
+                ),
+                (enemies[i].x - cx, enemies[i].y - cy),
+            )
+
+    def jump_animation(self, enemy):
+        enemy.used_spr = self.sprites[1]
+        enemy.collision = enemy.coll(0, 36 * enemy.direction)
+
+    def run(
+        self,
+        enemies,
+        stage_coll,
+        shoots,
+        mega_col,
+        megaman,
+    ):
+        for i in range(len(enemies) - 1, -1, -1):
+            enemies[i].can_respawn = False
+        self.in_screen(enemies)
+        self.check_health(enemies)
+        self.take_damage(enemies, shoots)
+        self.collision_check(enemies, stage_coll)
+        self.check_col(enemies, mega_col, megaman)
+        self.follow(enemies, megaman)
+        self.animation(enemies)

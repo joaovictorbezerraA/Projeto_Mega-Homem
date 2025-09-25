@@ -1,5 +1,4 @@
-from enemy import Blaster, Octopus
-from cutman import Cutman
+from enemy import Blaster, Octopus, Big_eye
 
 
 offset = 3
@@ -76,9 +75,15 @@ seg_4_en = [
     ob2_11,
 ]
 
+
+big_eye = Big_eye(134 * bw, -69 * bh)
+
+seg_7_mid_boss = [big_eye]
 spawn_bl = {"Cutman_Stage_Segment_1": seg_1_en, "Cutman_Stage_Segment_2": seg_2_en}
 
 spawn_oc = {"Cutman_Stage_Segment_3": seg_3_en, "Cutman_Stage_Segment_4": seg_4_en}
+
+spawn_ey = {"Cutman_Stage_Segment_7": seg_7_mid_boss}
 
 
 def spawn_blasters(segment, enemies):
@@ -89,5 +94,11 @@ def spawn_blasters(segment, enemies):
 
 def spawn_octopus(segment, enemies):
     for enemy in spawn_oc[segment]:
+        if enemy.can_respawn:
+            enemies.append(enemy)
+
+
+def spawn_big_eye(segment, enemies):
+    for enemy in spawn_ey[segment]:
         if enemy.can_respawn:
             enemies.append(enemy)
