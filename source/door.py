@@ -28,9 +28,10 @@ class Door(Collision, Screen):
     def open(self, megaman):
         if not self.already_open and self.collision.colliderect(megaman):
             self.opening = True
-            global_var.opening = True
+            global_var.stop_time = True
             if self.kind:
                 global_var.first_door_open = True
+                global_var.checkpoint = True
             else:
                 global_var.second_door_open = True
 
@@ -53,14 +54,14 @@ class Door(Collision, Screen):
             self.anim_inx = 0
         if self.open_inx == 16:
             self.opening = False
-            global_var.opening = False
+            global_var.stop_time = False
             self.already_open = True
 
-    def run(self, megaman, mega_col):
+    def run(self, megaman):
         if not megaman.alive:
             self.open_inx = 0
             self.already_open = False
         self.draw_door()
         if self.opening:
             self.door_anim()
-        self.open(mega_col)
+        self.open(megaman.collision)

@@ -401,11 +401,19 @@ w7_0 = w6_3
 
 st7_0 = st6_3
 
+f8_0 = pygame.Rect(138 * bw, -70 * bh, 60 * bw, bh)
+f8_1 = pygame.Rect(141 * bw, -75 * bh, 52 * bw, bh)
+f8_2 = pygame.Rect(197 * bw, -69 * bh, bw, 2 * bh)
+f8_3 = pygame.Rect(198 * bw, -68 * bh, 9 * bw, bh)
+
+w8_0 = pygame.Rect(207 * bw, -78 * bh, bw, 10 * bh)
+
 og_floor_col_7 = [
     f7_0,
     f7_1,
     f7_2,
     f7_3,
+    f8_1,
     w7_0,
 ]
 
@@ -413,13 +421,8 @@ og_stair_col_7 = [
     st7_0,
 ]
 
-f8_0 = pygame.Rect(138 * bw, -70 * bh, 60 * bw, bh)
-f8_1 = pygame.Rect(138 * bw, -75 * bh, 55 * bw, bh)
-f8_2 = pygame.Rect(197 * bw, -69 * bh, bw, 2 * bh)
-f8_3 = pygame.Rect(198 * bw, -68 * bh, 9 * bw, bh)
-
-w8_0 = pygame.Rect(207 * bw, -78 * bh, bw, 10 * bh)
 og_floor_col_8 = [
+    f7_2,
     f8_0,
     f8_1,
     f8_2,

@@ -15,7 +15,7 @@ def tittle_screen(screen):
             if event.type == pygame.QUIT:
                 quit()
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_x:
+                if event.key == pygame.K_j:
                     tittle = False
 
         timer += 1

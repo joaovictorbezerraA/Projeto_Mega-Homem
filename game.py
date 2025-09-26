@@ -1,10 +1,12 @@
 import sys
 import pygame
 from pygame import mixer
+from pygame.event import peek
 
 sys.path.insert(1, "source")
 
 from tittle import tittle_screen
+from ending_screen import ending_screen
 from megaman import Megaman
 from screen_config import Screen
 from shoot import Shoot
@@ -31,13 +33,12 @@ running = True
 soma = 0
 
 mega = Megaman(
-    45,
-    400,
-    # 6200,
-    # -3333,
+    # 45,
+    # 400,
+    6200,
+    -3333,
 )
 buster = Shoot(mega.x_coll + 30, mega.y_coll)
-col_mega = mega.coll()
 stage = Stage()
 bundy = Helicopter(0, 0)
 blaster = Blaster(0, 0)
@@ -60,6 +61,7 @@ boss_enabled = 0
 
 mixer.music.set_volume(0.5)
 pygame.mixer.music.play(-1)
+ending_timer = 0
 
 while running:
     screen.display_screen.fill("#00e8d8")
@@ -68,15 +70,15 @@ while running:
     events = pygame.event.get()
     for event in events:
         if event.type == pygame.QUIT:
-            running = False
+            quit()
         if event.type == pygame.KEYDOWN:
-            if not mega.stunned and event.key == pygame.K_z:
+            if not mega.stunned and event.key == pygame.K_SPACE:
                 mega.jump()
             if (
                 not mega.stunned
                 and mega.alive
                 and not mega.stopped
-                and event.key == pygame.K_x
+                and event.key == pygame.K_j
                 and global_var.shoots < 3
             ):
                 buster_shoot = Shoot(mega.x - 130 * (not mega.left), mega.y - 15)
@@ -95,17 +97,15 @@ while running:
                 else:
                     global_var.disable_bunby_spawn = False
 
-    col_mega = mega.coll(1)
-
     k = pygame.key.get_pressed()
     mega.keys_pressed = k
 
     floor_col = stage.handle_coll()
     stair_col = stage.handle_stair_coll()
     death_col = stage.handle_death_coll()
-    mega.colliding(col_mega, floor_col)
-    mega.on_stair_coll(events, col_mega, stair_col)
-    mega.on_death_coll(col_mega, death_col)
+    mega.colliding(floor_col)
+    mega.on_stair_coll(events, stair_col)
+    mega.on_death_coll(death_col)
 
     segment = stage.selected_sprite
 
@@ -113,26 +113,34 @@ while running:
         if len(boss) == 0:
             boss.append(cut)
         if cut.alive:
-            cut.run(boss, rolling_cutter, floor_col, mega, col_mega, shoots)
+            cut.run(boss, rolling_cutter, floor_col, mega, shoots)
+        else:
+            if ending_timer == 1:
+                pygame.mixer.music.load("./audio/music/Victory_theme.mp3")
+                pygame.mixer.music.play()
+
+            global_var.stop_time = True
+            ending_timer += 1
         if len(rolling_cutter) == 1:
             cut.with_scissors = False
-            rolling_cutter[0].run(cut, rolling_cutter, col_mega, mega)
+            rolling_cutter[0].run(cut, rolling_cutter, mega)
         else:
             cut.with_scissors = True
+
     mega.run()
     if not mega.mid_transition:
         stage.spawn(segment, enemies_bl, "blaster")
         stage.spawn(segment, enemies_oct_b, "octopus")
         stage.spawn(segment, enemies_b_e, "big_eye")
         buster.run(shoots, mega)
-        blaster.run(enemies_bl, bullets, shoots, col_mega, mega)
-        octopus_bat.run(enemies_oct_b, floor_col, shoots, col_mega, octopus_timer, mega)
-        eye.run(enemies_b_e, floor_col, shoots, col_mega, mega)
+        blaster.run(enemies_bl, bullets, shoots, mega)
+        octopus_bat.run(enemies_oct_b, floor_col, shoots, octopus_timer, mega)
+        eye.run(enemies_b_e, floor_col, shoots, mega)
         mega.display_health()
         doors = stage.list_doors(segment)
         for door in doors:
-            door.run(mega, col_mega)
-    bundy.run(random_enemies, mega.x, mega.y, col_mega, shoots, mega)
+            door.run(mega)
+    bundy.run(random_enemies, shoots, mega)
     mega.display_health()
     if mega.mid_transition:
         random_enemies = []
@@ -162,5 +170,9 @@ while running:
     if mega.x >= 9622:
         global_var.enable_boss = True
 
+    if ending_timer == 360:
+        running = False
+if not cut.alive:
+    ending_screen(screen)
 
 quit()

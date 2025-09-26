@@ -9,7 +9,7 @@ from projectile import Projectile
 
 
 class Enemy(Collision):
-    def __init__(self, x, y, width=48, height=48, health=0, damage=1):
+    def __init__(self, x, y, width=48, height=48, health=0, damage=2):
         self.x = x
         self.y = y
         self.init_x = self.x
@@ -36,9 +36,9 @@ class Enemy(Collision):
                         sounds.reflect_fire.play()
                     shoot[0].delete_shoot(shoots, shoot)
 
-    def check_col(self, enemies, mega_col, mega):
+    def check_col(self, enemies, mega):
         for i in range(len(enemies) - 1, -1, -1):
-            if mega_col.colliderect(enemies[i].collision):
+            if mega.collision.colliderect(enemies[i].collision):
                 mega.take_damage(enemies[i].damage)
 
     def in_screen(self, enemies):
@@ -169,19 +169,19 @@ class Blaster(Enemy, Projectile):
         enemy.project.append(proj)
         sounds.enemy_fire.play()
 
-    def run_proj(self, enemies, obj_bull, mega_col, mega):
+    def run_proj(self, enemies, obj_bull, mega):
         for i in range(len(enemies) - 1, -1, -1):
-            obj_bull.run_shoots(enemies[i].project, mega_col, mega)
+            obj_bull.run_shoots(enemies[i].project, mega)
 
-    def run(self, enemies, obj_bull, shoots, mega_col, mega):
+    def run(self, enemies, obj_bull, shoots, mega):
         for enemy in enemies:
             enemy.can_respawn = False
         self.in_screen(enemies)
         self.check_health(enemies)
         self.take_damage(enemies, shoots)
         self.animation(enemies)
-        self.run_proj(enemies, obj_bull, mega_col, mega)
-        self.check_col(enemies, mega_col, mega)
+        self.run_proj(enemies, obj_bull, mega)
+        self.check_col(enemies, mega)
 
 
 class Helicopter(Enemy):
@@ -293,6 +293,7 @@ class Helicopter(Enemy):
             segment == "Cutman_Stage_Segment_1"
             or segment == "Cutman_Stage_Segment_3"
             or segment == "Cutman_Stage_Segment_5"
+            or segment == "Cutman_Stage_Segment_6"
         ) and len(rand_enemies) < 3:
             rand_enemies.append(Helicopter(720 + spawn_x, randint(100, 600) + spawn_y))
         return rand_enemies
@@ -310,13 +311,13 @@ class Helicopter(Enemy):
             ):
                 enemies.remove(enemies[i])
 
-    def run(self, enemies, mega_x, mega_y, mega_col, shoots, mega):
+    def run(self, enemies, shoots, mega):
         self.delete(enemies)
         self.animation(enemies)
         self.take_damage(enemies, shoots)
         self.move(enemies)
-        self.attack(enemies, mega_x, mega_y)
-        self.check_col(enemies, mega_col, mega)
+        self.attack(enemies, mega.x, mega.y)
+        self.check_col(enemies, mega)
 
 
 class Octopus(Enemy):
@@ -429,7 +430,7 @@ class Octopus(Enemy):
             else:
                 enemies[i].can_move = True
 
-    def run(self, enemies, stage_col, shoots, mega_col, dt, mega):
+    def run(self, enemies, stage_col, shoots, dt, mega):
         for i in range(len(enemies) - 1, -1, -1):
             enemies[i].can_respawn = False
         self.in_screen(enemies)
@@ -442,7 +443,7 @@ class Octopus(Enemy):
                 self.move(enemies[i])
         if dt == 2:
             self.change_way(enemies)
-        self.check_col(enemies, mega_col, mega)
+        self.check_col(enemies, mega)
 
 
 class Big_eye(Enemy):
@@ -476,7 +477,6 @@ class Big_eye(Enemy):
         self.falling_mult = 0
 
         self.target = 0
-        self.dead = False
         self.colliding = False
         self.can_respawn = True
 
@@ -596,15 +596,15 @@ class Big_eye(Enemy):
         enemies,
         stage_coll,
         shoots,
-        mega_col,
         megaman,
     ):
         for i in range(len(enemies) - 1, -1, -1):
             enemies[i].can_respawn = False
         self.in_screen(enemies)
         self.check_health(enemies)
-        self.take_damage(enemies, shoots)
-        self.collision_check(enemies, stage_coll)
-        self.check_col(enemies, mega_col, megaman)
-        self.follow(enemies, megaman)
+        if not megaman.stopped:
+            self.take_damage(enemies, shoots)
+            self.collision_check(enemies, stage_coll)
+            self.check_col(enemies, megaman)
+            self.follow(enemies, megaman)
         self.animation(enemies)

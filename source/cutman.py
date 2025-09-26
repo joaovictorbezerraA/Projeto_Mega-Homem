@@ -251,7 +251,7 @@ class Cutman(Enemy, Life_bar):
         pygame.mixer.music.load("./audio/music/Boss_Theme.mp3")
         pygame.mixer.music.play(-1)
 
-    def run(self, boss, rol_cut, floor_collision, megaman, mega_col, shoots):
+    def run(self, boss, rol_cut, floor_collision, megaman, shoots):
         if self.starting:
             self.__on_startup__()
         self.restart(megaman)
@@ -261,7 +261,7 @@ class Cutman(Enemy, Life_bar):
         if not self.to_shoot:
             self.follow(megaman)
         self.coll_check(floor_collision, megaman)
-        self.check_col(boss, mega_col, megaman)
+        self.check_col(boss, megaman)
         self.in_screen(boss)
         self.take_damage(boss, shoots)
         self.animation()

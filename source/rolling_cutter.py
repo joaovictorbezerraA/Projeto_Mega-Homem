@@ -78,8 +78,8 @@ class Rolling_Cutter(Projectile):
             self.used_spr = self.sprite
         self.rotation_inx += 3
 
-    def run(self, cutman, projectiles, col_mega, megaman):
+    def run(self, cutman, projectiles, megaman):
         self.rotate()
         self.display_on_screen()
         self.move(cutman, projectiles)
-        self.check_collision(projectiles, col_mega, megaman, damage=5)
+        self.check_collision(projectiles, megaman, damage=5)
