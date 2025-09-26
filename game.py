@@ -33,10 +33,10 @@ running = True
 soma = 0
 
 mega = Megaman(
-    # 45,
-    # 400,
-    6200,
-    -3333,
+    45,
+    400,
+    # 6200,
+    # -3333,
 )
 buster = Shoot(mega.x_coll + 30, mega.y_coll)
 stage = Stage()
