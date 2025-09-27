@@ -8,7 +8,7 @@ class Rolling_Cutter(Projectile):
     def __init__(self, direction, x, y, target, width=14 * 3, height=14 * 3):
         super().__init__(direction, x, y, kind=None)
 
-        self.damage = 5
+        self.damage = 7
         self.width = width
         self.height = height
         self.sprite = global_var.cutman_sprites["Rolling_Cutter"]
@@ -82,4 +82,4 @@ class Rolling_Cutter(Projectile):
         self.rotate()
         self.display_on_screen()
         self.move(cutman, projectiles)
-        self.check_collision(projectiles, megaman, damage=5)
+        self.check_collision(projectiles, megaman, self.damage)

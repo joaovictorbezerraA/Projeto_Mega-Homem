@@ -2,7 +2,7 @@ import sys
 import pygame
 from pygame import mixer
 
-sys.path.insert(1, "source")
+sys.path.insert(1, "src")
 
 from tittle import tittle_screen
 from ending_screen import ending_screen
