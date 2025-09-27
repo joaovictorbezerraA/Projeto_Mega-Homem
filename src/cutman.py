@@ -26,6 +26,7 @@ class Cutman(Enemy, Life_bar):
         self.walking = False
         self.jumping = True
         self.on_ground = True
+        self.stuck = False
 
         self.collision = self.coll(0, 9, 24)
         self.gravity = 1
@@ -94,12 +95,13 @@ class Cutman(Enemy, Life_bar):
         cy = global_var.camera_y
 
         colliding = False
+        self.stuck = False
         for coll in collision:
             if self.collision.colliderect(coll):
                 if not self.direction and self.collision.right >= coll.right + 34:
                     self.collision.left = coll.right + 1
                     self.x = self.collision.left - 12 + cx
-                    self.jump(megaman, True)
+                    self.stuck = True
                 elif (
                     self.direction
                     and self.collision.right <= coll.left + self.speed + 34
@@ -123,6 +125,7 @@ class Cutman(Enemy, Life_bar):
                     self.collision.top < coll.bottom + self.y_speed
                     and self.collision.bottom > coll.bottom
                 ):
+                    self.y_speed = 0
                     self.jumping = False
                     self.collision.top = coll.bottom
                     self.y = self.collision.top + cy
@@ -147,10 +150,10 @@ class Cutman(Enemy, Life_bar):
             self.y_speed += self.gravity * self.falling_mult
         self.vertical_move()
 
-    def jump(self, megaman, spc=False):
+    def jump(self, megaman):
         in_range = self.x - 48 * 3 <= megaman.x <= self.x + 48 * 3
         if self.on_ground:
-            if in_range or (not in_range and spc):
+            if in_range or self.stuck:
                 self.x += 12
                 self.jumping = True
                 self.y_speed -= 10
@@ -177,7 +180,7 @@ class Cutman(Enemy, Life_bar):
         else:
             self.speed = -5
         self.x += self.speed
-        if self.choice == 2:
+        if self.choice == 2 or self.stuck:
             self.jump(megaman)
 
     def walking_animation(self):
