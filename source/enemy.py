@@ -329,10 +329,9 @@ class Helicopter(Enemy):
 
 class Octopus(Enemy):
     def __init__(
-        self, x=0, y=0, direction=False, way=False, width=16 * 3, health=5, damage=3
+        self, x=0, y=0, direction=False, way=False, width=16 * 3, health=3, damage=3
     ):
         super().__init__(x, y, width, health, damage)
-        self.health = 5
 
         self.direction = direction
         self.way = way
@@ -607,13 +606,14 @@ class Big_eye(Enemy):
         shoots,
         megaman,
     ):
-        for i in range(len(enemies) - 1, -1, -1):
-            enemies[i].can_respawn = False
-        self.in_screen(enemies)
-        self.check_health(enemies)
-        if not megaman.stopped:
-            self.collision_check(enemies, stage_coll)
-            self.take_damage(enemies, shoots)
-            self.check_col(enemies, megaman)
-            self.follow(enemies, megaman)
-        self.animation(enemies)
+        if not global_var.first_door_open:
+            for i in range(len(enemies) - 1, -1, -1):
+                enemies[i].can_respawn = False
+            self.in_screen(enemies)
+            self.check_health(enemies)
+            if not megaman.stopped:
+                self.collision_check(enemies, stage_coll)
+                self.take_damage(enemies, shoots)
+                self.check_col(enemies, megaman)
+                self.follow(enemies, megaman)
+            self.animation(enemies)

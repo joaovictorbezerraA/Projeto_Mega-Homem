@@ -12,7 +12,7 @@ def ending_screen(screen):
     while ending:
         events = pygame.event.get()
         for event in events:
-            if event.type == pygame.QUIT:
+            if event.type == pygame.QUIT or event.type == pygame.KEYDOWN:
                 ending = False
 
         screen.display_screen.blit(pygame.transform.scale_by(es, 3), (-24, 0))
