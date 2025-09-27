@@ -22,8 +22,6 @@ pj_sprites = image_loader("./sprites/Enemy_Sprites/Projectiles_Sprites")
 cutman_sprites = image_loader("./sprites/Boss_Sprites")
 debug_mode = False
 
-# camera_x = 6200
-# camera_y = -3800
 camera_x = 0
 camera_y = 0
 

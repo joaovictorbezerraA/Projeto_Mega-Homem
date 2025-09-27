@@ -1,7 +1,6 @@
 import sys
 import pygame
 from pygame import mixer
-from pygame.event import peek
 
 sys.path.insert(1, "source")
 
@@ -35,8 +34,6 @@ soma = 0
 mega = Megaman(
     45,
     400,
-    # 6200,
-    # -3333,
 )
 buster = Shoot(mega.x_coll + 30, mega.y_coll)
 stage = Stage()

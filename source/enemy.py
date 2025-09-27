@@ -32,6 +32,7 @@ class Enemy(Collision):
                 if enemy.collision.colliderect(shoot[0].collision):
                     if not enemy.defending:
                         enemy.health -= 1
+                        sounds.enemy_damage.play()
                     else:
                         sounds.reflect_fire.play()
                     shoot[0].delete_shoot(shoots, shoot)
@@ -191,7 +192,7 @@ class Blaster(Enemy, Projectile):
 
 
 class Helicopter(Enemy):
-    def __init__(self, x=600, y=0, width=13 * 3, height=15 * 3, health=3, damage=3):
+    def __init__(self, x=600, y=0, width=13 * 3, height=15 * 3, health=1, damage=3):
         super().__init__(
             x,
             y,
@@ -300,7 +301,7 @@ class Helicopter(Enemy):
             or segment == "Cutman_Stage_Segment_3"
             or segment == "Cutman_Stage_Segment_5"
             or segment == "Cutman_Stage_Segment_6"
-        ) and len(rand_enemies) < 3:
+        ) and len(rand_enemies) < 5:
             rand_enemies.append(Helicopter(720 + spawn_x, randint(100, 600) + spawn_y))
         return rand_enemies
 
@@ -328,9 +329,11 @@ class Helicopter(Enemy):
 
 class Octopus(Enemy):
     def __init__(
-        self, x=0, y=0, direction=False, way=False, width=16 * 3, health=3, damage=3
+        self, x=0, y=0, direction=False, way=False, width=16 * 3, health=5, damage=3
     ):
         super().__init__(x, y, width, health, damage)
+        self.health = 5
+
         self.direction = direction
         self.way = way
         self.speed = 0
