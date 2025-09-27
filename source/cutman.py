@@ -150,7 +150,7 @@ class Cutman(Enemy, Life_bar):
     def jump(self, megaman, spc=False):
         in_range = self.x - 48 * 3 <= megaman.x <= self.x + 48 * 3
         if self.on_ground:
-            if in_range or spc:
+            if in_range or (not in_range and spc):
                 self.x += 12
                 self.jumping = True
                 self.y_speed -= 10
