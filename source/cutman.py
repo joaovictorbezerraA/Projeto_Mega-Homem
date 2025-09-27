@@ -8,7 +8,7 @@ from life_bar import Life_bar
 
 
 class Cutman(Enemy, Life_bar):
-    def __init__(self, x, y, width=48, height=72, max_health=28, damage=4):
+    def __init__(self, x, y, width=48, height=72, max_health=28, damage=6):
         super().__init__(x, y, width, height, damage)
         self.max_health = max_health
         self.health = self.max_health
@@ -99,7 +99,7 @@ class Cutman(Enemy, Life_bar):
                 if not self.direction and self.collision.right >= coll.right + 34:
                     self.collision.left = coll.right + 1
                     self.x = self.collision.left - 12 + cx
-                    self.jump(megaman, 1)
+                    self.jump(megaman, True)
                 elif (
                     self.direction
                     and self.collision.right <= coll.left + self.speed + 34
@@ -130,8 +130,8 @@ class Cutman(Enemy, Life_bar):
                 else:
                     if self.collision.top + 55 <= coll.top:
                         self.x -= 8
-            if not colliding:
-                self.on_ground = False
+        if not colliding:
+            self.on_ground = False
 
         self.y_coll = self.y
         self.x_coll = self.x
@@ -147,20 +147,18 @@ class Cutman(Enemy, Life_bar):
             self.y_speed += self.gravity * self.falling_mult
         self.vertical_move()
 
-    def jump(self, megaman, spc=0):
+    def jump(self, megaman, spc=False):
         in_range = self.x - 48 * 3 <= megaman.x <= self.x + 48 * 3
         if self.on_ground:
-            if in_range or (not in_range and spc):
-                for i in range(20):
-                    if not i % 10:
-                        self.x += 6
-                        self.jumping = True
-                        self.y_speed -= 5
-                        self.vertical_move()
+            if in_range or spc:
+                self.x += 12
+                self.jumping = True
+                self.y_speed -= 10
+                self.vertical_move()
 
-    def change_dir(self, megaman, spc=0):
+    def change_dir(self, megaman):
         if self.x < megaman.x - 48 * 4:
-            if not self.direction or spc:
+            if not self.direction:
                 self.choice = randint(0, 2)
             self.direction = True
         elif self.x > megaman.x + 48 * 4:

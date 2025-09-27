@@ -4,7 +4,7 @@ import global_var
 def cam_vertical_move(pos_relativa_y):
     if pos_relativa_y < -85:
         global_var.camera_y -= 768
-    elif pos_relativa_y > 730:
+    elif pos_relativa_y > 760:
         global_var.camera_y += 768
 
 

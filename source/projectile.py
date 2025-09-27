@@ -64,7 +64,7 @@ class Projectile(Collision):
                 (shoots[i].x - cx, shoots[i].y - cy),
             )
 
-    def check_collision(self, enemies, mega, damage=3):
+    def check_collision(self, enemies, mega, damage=7):
         for i in range(len(enemies) - 1, -1, -1):
             if mega.collision.colliderect(enemies[i].collision):
                 mega.take_damage(damage)

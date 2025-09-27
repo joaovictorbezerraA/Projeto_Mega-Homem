@@ -341,8 +341,8 @@ class Megaman(Atributtes, Life_bar, Collision):
 
     def respawn(self):
         if global_var.checkpoint:
-            self.init_x = 6200
-            self.init_y = -3333
+            self.init_x = 7267
+            self.init_y = -3433
         self.stunned = False
         self.invincible = False
         self.left = True
@@ -352,7 +352,7 @@ class Megaman(Atributtes, Life_bar, Collision):
         global_var.enable_boss = False
         self.x = self.init_x
         self.y = self.init_y
-        global_var.camera_x = 0 + 6200 * global_var.checkpoint
+        global_var.camera_x = 0 + 6903 * global_var.checkpoint
         global_var.camera_y = 0 - 3800 * global_var.checkpoint
         pygame.mixer.music.load("./audio/music/Cutman_Stage_Theme.mp3")
         pygame.mixer.music.play(-1)

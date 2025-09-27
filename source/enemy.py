@@ -48,9 +48,15 @@ class Enemy(Collision):
             if (enemies[i].x - cx < -80 or enemies[i].x - cx > 760) or (
                 enemies[i].y - cy < 0 or enemies[i].y - cy > 720
             ):
+                enemies[i].anim_inx = 0
+                enemies[i].project = []
                 enemies[i].can_respawn = True
-                if enemies[i].health == 0:
-                    enemies[i].health = enemies[i].max_health
+                enemies[i].health = enemies[i].max_health
+                enemies[i].x = enemies[i].init_x
+                enemies[i].y = enemies[i].init_y
+                enemies[i].x_coll = enemies[i].x
+                enemies[i].y_coll = enemies[i].y
+                enemies[i].collision = self.coll()
                 enemies.remove(enemies[i])
 
     def check_health(self, enemies):
@@ -603,8 +609,8 @@ class Big_eye(Enemy):
         self.in_screen(enemies)
         self.check_health(enemies)
         if not megaman.stopped:
-            self.take_damage(enemies, shoots)
             self.collision_check(enemies, stage_coll)
+            self.take_damage(enemies, shoots)
             self.check_col(enemies, megaman)
             self.follow(enemies, megaman)
         self.animation(enemies)
