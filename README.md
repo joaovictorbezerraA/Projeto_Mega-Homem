@@ -15,7 +15,7 @@ The game can also be installed running the following command
 ```
 pip install Projeto-Mega-Homem
 ```
-in which case, it can be run using the command after installed
+in which case, it can be run using this command after installed
 ```
 mega_homem
 ```
