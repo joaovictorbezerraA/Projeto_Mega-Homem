@@ -12,9 +12,13 @@ while pygame is active
 
 # Pip
 The game can also be installed running the following command
-`pip install Projeto-Mega-Homem`
+```
+pip install Projeto-Mega-Homem
+```
 in which case, it can be run using the command after installed
-`mega_homem`
+```
+mega_homem
+```
 
 # Controls
 * Movement: WASD
