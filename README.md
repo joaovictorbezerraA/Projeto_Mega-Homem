@@ -10,6 +10,12 @@ To run this program it's required to execute the file game.py
 with the python command
 while pygame is active
 
+# Pip
+The game can also be installed running the following command
+    pip install Projeto-Mega-Homem
+in which case, it can be run using the command after installed
+    mega_homem
+
 # Controls
 * Movement: WASD
 * Jump: Space
