@@ -5,7 +5,7 @@ The following requisites are necessary to run the game:
 * Python 3.11.0
 * Pygame 2.6.1
 * 
-# Installation
+# Git Installation
 To play to game, you first need to install pygame with
 ```
 pip install pygame
@@ -17,8 +17,9 @@ cd Projeto_Mega-Homem
 python3 game.py
 ```
 # Pypi installation
-The game can also be installed with pip running the following command
+The game can also be installed with pip running the following commands
 ```
+pip install pygame
 pip install Projeto-Mega-Homem
 ```
 in which case, it can be run using this command after installed
