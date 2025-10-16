@@ -4,7 +4,7 @@ The Cut Man stage from Mega Man 1 (NES) remade with pygame
 The following requisites are necessary to run the game:
 * Python 3.11.0
 * Pygame 2.6.1
-* 
+
 # Git Installation
 To play to game, you first need to install pygame with
 ```
