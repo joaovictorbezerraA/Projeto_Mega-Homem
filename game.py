@@ -29,7 +29,6 @@ timer = 5
 octopus_timer = 2
 
 running = True
-soma = 0
 
 mega = Megaman(
     45,
